@@ -30,3 +30,109 @@
 .date-ticket-numeral{font-size:clamp(8rem,17vw,15rem);letter-spacing:-.035em}
 @media(max-width:750px){.date-ticket-numeral{font-size:clamp(8rem,26vw,12rem)}}
 @media(max-width:440px){.date-ticket-numeral{font-size:8rem}}
+
+/* The diary edition: watercolor flowers, soft paper, and a cover that opens. */
+:root,[data-theme="blend"]{--bg:#fff0f4;--paper:#fffcf9;--ink:#6b3153;--muted:#886277;--pink:#ef91b2;--pink-deep:#ce497f;--yellow:#ffe39a;--line:#f2d8e1;--shadow:0 24px 60px #8e48602a}
+[data-theme="pink"]{--bg:#ffeaf2;--paper:#fffafb;--ink:#722c54;--muted:#865b73;--pink:#ed88af;--pink-deep:#c8407a;--yellow:#ffe6b1;--line:#f1cddd}
+[data-theme="yellow"]{--bg:#fff4d8;--paper:#fffdf4;--ink:#70455a;--muted:#856e6d;--pink:#eda8af;--pink-deep:#bf6383;--yellow:#ffdd75;--line:#eedebd}
+body{background:var(--bg);background-image:radial-gradient(circle at 8% 18%,#ffdbec 0,transparent 33%),radial-gradient(circle at 94% 80%,#fff3cb 0,transparent 30%);color:var(--ink)}
+.chapter-label,.kicker{font-size:.8rem;letter-spacing:.09em;text-transform:none;font-weight:800;color:var(--pink-deep)}
+.chapter-label{font-family:Caveat,cursive;font-size:1.65rem;line-height:1.2;margin-bottom:1.6rem}
+.primary,.soft-button{border:0;border-radius:999px;box-shadow:0 9px 24px #a453792d;font-size:.95rem}
+.primary{background:linear-gradient(135deg,#e56796,#cc4a82);color:white}
+.soft-button{background:#fff9f9;color:var(--pink-deep);border:1px solid #f2cbda}
+.primary:hover,.soft-button:hover{transform:translateY(-4px);box-shadow:0 13px 26px #a4537940}
+.chapter-nav{border-bottom:1px solid #f4d2df;background:#fff9f9db;box-shadow:0 5px 20px #9d60741a}
+.brand{color:var(--pink-deep)}.nav-links a{border:0;border-radius:999px;padding:.5rem .8rem}.nav-links a.active{background:#fce1eb;color:var(--pink-deep);border-color:transparent}
+.nav-links a:not(.active):hover{background:#fff0f5}.theme-picker{box-shadow:0 3px 10px #a66a7820}
+.diary-intro{display:flex;align-items:center;justify-content:center;padding:2rem;min-height:100dvh;background:radial-gradient(circle at 22% 20%,#fff8fc,transparent 48%),radial-gradient(circle at 80% 77%,#ffe6ed,transparent 48%),#fce5ed;background-image:radial-gradient(circle at 22% 20%,#fff8fc,transparent 48%),radial-gradient(circle at 80% 77%,#ffe6ed,transparent 48%)}
+.diary-glow{position:absolute;inset:10% 18%;border-radius:50%;background:#fff8;filter:blur(70px);pointer-events:none}
+.intro-floating-flower{position:absolute;z-index:0;pointer-events:none;opacity:.58;filter:drop-shadow(0 10px 12px #af668024);animation:flower-drift 10s ease-in-out infinite}
+.intro-flower-left{width:clamp(170px,24vw,350px);left:-4%;bottom:-8%;transform:rotate(-24deg)}
+.intro-flower-right{width:clamp(170px,24vw,330px);right:-4%;top:-10%;animation-delay:-4s}
+.diary-cover-wrap{position:relative;z-index:2;perspective:1400px}
+.diary-cover{position:relative;display:block;overflow:visible;width:min(545px,calc(100vw - 3rem));height:min(690px,78dvh);min-height:530px;padding:0;border:0;border-radius:25px 35px 35px 25px;text-align:center;color:#7d3556;background-color:#ee95b2;background-image:repeating-linear-gradient(45deg,#ffffff22 0 4px,transparent 4px 29px),repeating-linear-gradient(-45deg,#ffffff22 0 4px,transparent 4px 29px),linear-gradient(135deg,#f6acc1,#ed8eae);box-shadow:inset 10px 0 0 #db789c,inset -10px 0 0 #d9799b,0 20px 0 #b96283,0 35px 55px #8c4c6680;transition:transform .35s,box-shadow .35s}
+.diary-cover:hover{transform:translateY(-8px) rotate(1deg);box-shadow:inset 10px 0 0 #db789c,inset -10px 0 0 #d9799b,0 25px 0 #b96283,0 42px 65px #8c4c6680}
+.diary-spine{position:absolute;left:0;top:0;bottom:0;width:30px;border-radius:25px 0 0 25px;background:linear-gradient(90deg,#bd5b7d,#df7fa1 54%,#ffb8ca)}
+.diary-cover-seam{position:absolute;inset:17px 20px 17px 35px;border:2px dashed #fff8;border-radius:17px 25px 25px 17px;pointer-events:none}
+.diary-cover-heading{position:absolute;top:7%;left:0;right:0;color:#fff7fc;font:1.5rem/1 Caveat,cursive}
+.diary-cover-label{position:absolute;top:28%;left:17%;right:14%;min-height:270px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem;background:#fffbf8;border:4px double #e382a8;border-radius:25px;box-shadow:0 8px 0 #b9557850,0 15px 28px #963e603a;transform:rotate(-1deg)}
+.diary-cover-label:before{content:'♡';position:absolute;top:-29px;left:calc(50% - 32px);width:64px;height:44px;display:grid;place-items:center;background:#e45788;border-radius:60% 60% 45% 45%;color:white;font:2rem Fredoka}
+.diary-cover-label small{font-size:.63rem;letter-spacing:.18em;font-weight:900;color:#a66a80}
+.diary-cover-label strong{display:block;margin:.6rem 0;font:700 clamp(4.8rem,9vw,7rem)/1 Caveat,cursive;color:#be3f72}
+.diary-cover-label span{font:1.25rem Caveat,cursive;color:#9c6a7b}
+.diary-cover-clasp{position:absolute;z-index:5;right:-34px;top:50%;display:grid;place-items:center;width:76px;height:76px;border:6px solid white;border-radius:50%;background:#e9608e;color:white;font:2.4rem Fredoka;box-shadow:0 7px 0 #a83c64,0 12px 24px #70415855;transform:translateY(-50%);animation:clasp-pulse 3s ease-in-out infinite}
+.diary-cover-clasp small{position:absolute;top:72px;background:white;border-radius:99px;padding:.1rem .45rem;color:#bf4b78;font:900 .55rem Nunito,sans-serif;letter-spacing:.12em}
+.diary-cover-peony,.diary-cover-magnolia,.diary-cover-nailong{position:absolute;pointer-events:none;filter:drop-shadow(0 9px 9px #8c4c6655)}
+.diary-cover-peony{width:175px;left:-55px;bottom:-38px;transform:rotate(-18deg);animation:flower-sway 7s ease-in-out infinite}
+.diary-cover-magnolia{width:175px;right:-55px;top:-55px;transform:rotate(25deg);animation:flower-sway 8s ease-in-out infinite reverse}
+.diary-cover-nailong{width:165px;right:18px;bottom:-28px;transform:rotate(8deg);animation:buddy-bob 3.8s ease-in-out infinite}
+.diary-cover-footer{position:absolute;bottom:5%;left:0;right:0;color:white;font:1.4rem Caveat,cursive}
+.diary-hint{text-align:center;color:#ad5b7d;font:1.5rem Caveat,cursive;margin:1.7rem 0 0;animation:hint-bob 2s ease-in-out infinite}
+.diary-spread{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;width:min(1050px,calc(100vw - 2.5rem));min-height:620px;perspective:1400px;border-radius:14px 28px 28px 14px;overflow:hidden;background:#fffdfb;box-shadow:0 17px 0 #e2b1c1,0 33px 60px #84496766}
+.diary-spread:after{content:'';position:absolute;z-index:2;top:0;bottom:0;left:50%;width:28px;transform:translateX(-50%);background:linear-gradient(90deg,#d7b1b927,transparent 45%,#d7b1b934);pointer-events:none}
+.diary-page{position:relative;min-width:0;padding:clamp(2rem,4vw,4rem);overflow:hidden;background:linear-gradient(120deg,#fffefa,#fff8f7)}
+.diary-letter-page{display:flex;flex-direction:column;justify-content:center}
+.diary-page-top{font:2rem Caveat,cursive;color:var(--pink-deep)}
+.diary-letter-page h1{font-size:clamp(3.5rem,5vw,5.5rem);margin:.5rem 0 1.7rem;color:#813656}
+.diary-letter-page h1 em{font-family:Caveat,cursive;font-size:1.25em;line-height:.7}
+.diary-letter-page p{position:relative;z-index:1;max-width:480px;font-size:1.05rem;line-height:1.8;color:#684155}
+.diary-handwritten{position:relative;z-index:1;align-self:flex-end;margin:1rem 1rem 0;color:#c44377;font:2rem/1 Caveat,cursive;transform:rotate(-5deg)}
+.diary-letter-flower{position:absolute;width:240px;left:-60px;bottom:-65px;opacity:.55;pointer-events:none}
+.diary-photo-page{display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(140deg,#fff6ee,#ffe3ed)}
+.diary-page-photo{position:relative;width:min(310px,90%);padding:9px 9px 35px;background:white;box-shadow:0 15px 27px #88486444;transform:rotate(6deg)}
+.diary-page-photo img{width:100%;height:320px;object-fit:cover;object-position:center 32%}
+.diary-page-photo span{position:absolute;bottom:4px;left:10px;font:1.35rem Caveat,cursive}
+.diary-letter-sticker{right:2%;top:5%;width:155px;z-index:2;animation:buddy-bob 4s ease-in-out infinite}
+.diary-enter{z-index:3;display:flex;align-items:center;justify-content:center;gap:2rem;width:min(290px,90%);min-height:54px;margin-top:3rem;border:0;border-radius:99px;background:#d85284;color:white;box-shadow:0 9px 20px #a54b703d;font-weight:900;transition:transform .25s,box-shadow .25s}
+.diary-enter:hover{transform:translateY(-5px);box-shadow:0 14px 25px #a54b7055}.diary-enter span{font-size:1.4rem}
+.diary-back{z-index:3;margin-top:1rem;border:0;background:none;color:#ad6580;font-size:.8rem;text-decoration:underline}
+.hero{background:radial-gradient(circle at 12% 8%,#ffe2f0,transparent 35%),radial-gradient(circle at 87% 82%,#fff0c9,transparent 38%),#fff3f5;background-image:radial-gradient(circle at 12% 8%,#ffe2f0,transparent 35%),radial-gradient(circle at 87% 82%,#fff0c9,transparent 38%)}
+.hero-board{border:0;border-radius:44px 18px 55px 22px;background:linear-gradient(135deg,#fffbfbdc,#fffaf7eb);box-shadow:0 25px 65px #ac66802c;isolation:isolate}
+.hero-board:before,.hero-board:after{display:none}.hero .chapter-label{font-size:1.7rem;margin-bottom:.9rem}
+.hero-occasion{border:0;border-radius:99px;padding:.4rem .9rem;background:#ffe1a9;color:#9b4e6e;box-shadow:0 4px 9px #c77d9726}
+.hero h1{color:#773557;letter-spacing:-.06em}.hero h1 em{font:700 1.2em/.73 Caveat,cursive;color:#dd5c8f;display:inline-block;transform:rotate(-6deg)}
+.hero-age strong{color:#dd6b94}.hero-sign{color:#ae5b7c}.hero-sign b{color:#a83f72}
+.hero-collage{z-index:2}.hero-sunburst{background:radial-gradient(circle at 50% 45%,#ffe3eaa8 0 34%,transparent 35%),radial-gradient(circle at 55% 50%,#fff3d5 0 57%,transparent 58%);opacity:.95}
+.hero-photo{border:0;border-radius:7px;padding:9px 9px 42px;box-shadow:0 18px 35px #8c5b7057}.hero-photo img{border-radius:3px}.hero-sticker{width:200px;right:-7%;bottom:-9%;animation:buddy-bob 4s ease-in-out infinite}
+.hero-floral{position:absolute;z-index:1;pointer-events:none;filter:drop-shadow(0 12px 12px #a6688244);animation:flower-sway 7s ease-in-out infinite}
+.hero-floral-peony{width:195px;left:-70px;bottom:-55px;transform:rotate(-25deg)}.hero-floral-magnolia{width:205px;right:-65px;top:-80px;transform:rotate(22deg);animation-delay:-3s}
+.hero-bottom-strip{font:1.8rem Caveat,cursive;letter-spacing:0;color:#bd6a8a;text-transform:none}.hero-bottom-strip span{font-size:1.8rem}
+.gallery-chapter{background:linear-gradient(170deg,#fff8fb,#ffe7ed 60%,#fff7eb)}.gallery-top{position:relative;z-index:1}.gallery-top h2 em,.chapter-intro h2 em,.arcade-heading h2 em{font-family:Caveat,cursive;font-size:1.2em;line-height:.8;display:inline-block;transform:rotate(-5deg)}.gallery-count{border:0;background:#fff8c6;box-shadow:0 8px 18px #a85e7830}.gallery-strip{position:relative;z-index:1}.photo{border-radius:9px;box-shadow:0 16px 32px #955b7029}.photo-image{border-radius:5px}.photo:hover{box-shadow:0 25px 42px #955b703d}.gallery-nailong{width:165px;margin:-3rem 6% 0 auto;animation:buddy-bob 4.3s ease-in-out infinite}
+.section-flower{position:absolute;pointer-events:none;z-index:0;filter:drop-shadow(0 10px 12px #ae668033);animation:flower-sway 9s ease-in-out infinite}
+.gallery-flower{width:280px;right:-75px;top:45px;opacity:.78;transform:rotate(24deg)}
+.us-chapter{background:linear-gradient(180deg,#ffe4ed,#fff5f1 48%,#fff9e9)}.us-flower{width:240px;right:-40px;top:90px;opacity:.6}
+.memory-copy{border-left:3px solid #f3aec4}.scene-tag{border:0;border-radius:99px;background:#fff0c9;color:#b0597d;padding:.4rem .75rem;letter-spacing:.03em;text-transform:none}.memory-copy h3{color:#783454}
+.letters-chapter{background:radial-gradient(circle at 5% 95%,#ffe1e9,transparent 30%),radial-gradient(circle at 95% 0%,#fff2c7,transparent 28%),#fff7f4;background-image:radial-gradient(circle at 5% 95%,#ffe1e9,transparent 30%),radial-gradient(circle at 95% 0%,#fff2c7,transparent 28%)}
+.letters-flower{width:260px;right:-50px;top:20px;opacity:.62}
+.letter-card{position:relative;border:0;border-radius:12px 35px 18px 25px;min-height:330px;background:linear-gradient(145deg,#fffefa,#fff2f3);box-shadow:0 18px 36px #a45b782b;padding:2rem;overflow:hidden}
+.letter-card:after{content:'';position:absolute;right:0;top:0;width:55px;height:55px;background:linear-gradient(225deg,#f7c8d8 50%,#fce5e9 51%);border-radius:0 35px 0 15px;box-shadow:-3px 4px 8px #af779126}
+.letter-card:hover:not(:disabled){box-shadow:0 25px 42px #a45b7840}.letter-number{font-family:Caveat,cursive;font-size:1.45rem;letter-spacing:0;text-transform:none}
+.letter-card-art{display:grid;place-items:center;margin:auto;width:135px;height:135px;transition:transform .3s}.letter-card-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 8px #a7557c2c)}.letter-card:hover .letter-card-art{transform:rotate(9deg) scale(1.1)}.letter-card strong{font-size:1.85rem;color:#8a4161}.letter-card small{font-weight:800}
+.letter-paper{border:0;border-radius:18px 35px 18px 35px;box-shadow:0 25px 65px #1e112b70;background:linear-gradient(135deg,#fffefa,#fff8f7)}.letter-paper h3{color:#8b3e64}
+.hope-chapter{background:linear-gradient(145deg,#ffecf4,#fff7e8)}.hope-flower{width:235px;right:-60px;top:100px;opacity:.75}.hope-grid{position:relative;z-index:1}.hope-card{border:0;border-radius:25px 12px 30px 14px;background:#fffdfbe8;box-shadow:0 16px 34px #af6e8830}.when-grid button{border:1px solid #f3d8e1;border-radius:16px;background:#fff8fa;transition:transform .22s,background .22s}.when-grid button:hover{transform:translateY(-3px);background:#fff0f5}.when-grid button.active{border-color:#eba4bd;background:#ffe9f0}.when-message{border:0;border-radius:18px;background:#fff0d5}.garden-bed{border-bottom:4px solid #a4bb89}.garden-bed .flower-art{width:74px;min-width:74px;height:90px;object-fit:contain;transform-origin:bottom;filter:drop-shadow(0 5px 7px #7f9a7430)}.breathing-flower{width:140px}.breathing-flower .flower-art{width:100%}
+.arcade-chapter{background:linear-gradient(160deg,#fff5df,#ffeaf2 70%,#fff9f2);background-image:linear-gradient(160deg,#fff5df,#ffeaf2 70%,#fff9f2)}.arcade-flower{width:210px;left:-50px;top:60px;opacity:.65}.arcade-heading{position:relative;z-index:1}.arcade-sidebar,.arcade-stage{border:0;border-radius:25px 16px 25px 16px;background:#fffbfce8;box-shadow:0 19px 40px #9d607429}.arcade-tab:hover,.arcade-tab.active{border:0;background:#ffe8f1}.arcade-tab-icon{border-radius:50%;background:#ffe5a3}.game-scorebar{border:0;border-radius:16px;background:#ffedb8;color:#7a4761}.memory-card{border:2px solid white;border-radius:13px;box-shadow:0 8px 15px #78475c30}.memory-card.matched{border-color:#e5c16a}.memory-card-back{background:linear-gradient(135deg,#f7a0bd,#ed7fa9)}.catch-field,.hop-field{border:0;border-radius:25px}.quiz-option{border-radius:18px}.scratch-card{border:0;border-radius:20px;box-shadow:0 13px 26px #af709130}
+.date-chapter{background:linear-gradient(130deg,#ffe9f1,#fff3da 45%,#ffe5ee);background-image:linear-gradient(130deg,#ffe9f1,#fff3da 45%,#ffe5ee)}.date-ticket{border:0;border-radius:34px 18px 38px 20px;box-shadow:0 23px 56px #a35f792b;background:#fffcf8}.date-flower{position:absolute;right:-80px;top:-65px;z-index:1;width:270px;pointer-events:none;filter:drop-shadow(0 8px 10px #a15d7930);animation:flower-sway 8s ease-in-out infinite}.date-ticket-top{border:0;border-radius:99px;background:#ffecbc;color:#a45877}.date-ticket-numeral{color:#d45c8a}.date-ticket-photo{z-index:2;border-radius:6px;box-shadow:0 17px 36px #83566d42}.date-nailong{z-index:3;width:180px;animation:buddy-bob 4s ease-in-out infinite}.countdown-panel{border-radius:22px;background:#7f3b5e;box-shadow:0 16px 35px #9b5c772c}
+.buddy{animation:buddy-bob 4s ease-in-out infinite}.buddy:hover{animation:none}
+@keyframes flower-sway{50%{translate:0 -10px;rotate:5deg}}@keyframes flower-drift{50%{translate:0 16px;rotate:5deg}}@keyframes buddy-bob{50%{translate:0 -11px;rotate:3deg}}@keyframes clasp-pulse{50%{scale:1.08}}@keyframes hint-bob{50%{translate:0 -5px}}
+@media(max-width:750px){
+  .diary-intro{display:block;padding:1rem;overflow:auto}.diary-cover-wrap{min-height:calc(100dvh - 2rem);display:flex;flex-direction:column;align-items:center;justify-content:center}.diary-cover{height:min(680px,75dvh);min-height:500px}.diary-cover-label{top:29%;min-height:235px}.diary-cover-label strong{font-size:6rem}.diary-cover-peony{width:145px;left:-22px;bottom:-20px}.diary-cover-magnolia{width:140px;right:-25px;top:-28px}.diary-cover-nailong{width:145px;right:0}
+  .diary-spread{display:flex;flex-direction:column;width:min(600px,calc(100vw - 2rem));margin:1rem auto}.diary-spread:after{display:none}.diary-page{padding:2.4rem 1.6rem}.diary-letter-page{min-height:520px}.diary-photo-page{min-height:440px}.diary-page-photo{width:210px}.diary-page-photo img{height:220px}.diary-letter-sticker{width:110px;top:0;right:0}.diary-enter{margin-top:1.5rem}
+  .hero-board{border-radius:28px 12px 30px 16px}.hero-floral-peony{width:115px;left:-28px;bottom:-30px}.hero-floral-magnolia{width:130px;right:-25px;top:-48px}.hero-sticker{width:135px;right:-3%;bottom:-6%}.hero h1 em{font-size:1.25em}.gallery-flower,.us-flower,.letters-flower,.hope-flower,.arcade-flower{width:150px;opacity:.42}.date-flower{width:160px;right:-20px;top:-35px}.date-nailong{width:130px}
+  .chapter-nav{box-shadow:0 3px 15px #9d607425}.nav-links{border-bottom:1px solid #f2d9e2}.nav-links a{padding:.45rem .55rem}
+}
+@media(max-width:440px){
+  .diary-cover{width:calc(100vw - 2.2rem);height:min(600px,74dvh);min-height:485px}.diary-cover-label{left:17%;right:12%;min-height:210px}.diary-cover-label strong{font-size:5.4rem}.diary-cover-clasp{right:-12px;width:66px;height:66px}.diary-cover-clasp small{top:62px}.diary-cover-heading{font-size:1.3rem}.diary-cover-peony{width:125px}.diary-cover-magnolia{width:125px}.diary-cover-nailong{width:128px}.diary-letter-page h1{font-size:3.8rem}.diary-letter-page p{font-size:1rem}.diary-letter-flower{width:165px;left:-50px;bottom:-40px}.hero h1{font-size:clamp(3.7rem,13vw,4.4rem)}.hero h1 em{font-size:1.25em}.hero-floral-magnolia{width:105px;right:-15px;top:-28px}.hero-floral-peony{width:90px}.letter-card{min-height:275px}.gallery-nailong{width:125px}
+}
+@media(prefers-reduced-motion:reduce){.intro-floating-flower,.diary-cover-clasp,.diary-cover-peony,.diary-cover-magnolia,.diary-cover-nailong,.diary-hint,.diary-letter-sticker,.hero-floral,.hero-sticker,.section-flower,.gallery-nailong,.date-flower,.date-nailong,.buddy{animation:none!important}}
+.diary-cover-footer{left:50px;right:145px;bottom:5.5%;text-align:center}
+.chapter-intro h2 em{line-height:1.05}
+@media(max-width:750px){.chapter-intro h2{margin-bottom:1.7rem}.hope-chapter .chapter-intro h2{font-size:clamp(3.1rem,14vw,5rem);margin-bottom:2.4rem}.hope-chapter .chapter-intro h2 em{font-size:1.08em;line-height:1.1}.date-flower{width:135px;top:-30px;right:-16px}}
+@media(max-width:440px){.diary-cover-footer{left:45px;right:125px;bottom:6%;font-size:1.15rem}}
+[data-theme="yellow"] .hero{background:linear-gradient(140deg,#fff5d9,#fff9ea 55%,#ffe9dd)}
+[data-theme="yellow"] .gallery-chapter{background:linear-gradient(170deg,#fffaf0,#fff0d2)}
+[data-theme="yellow"] .us-chapter{background:linear-gradient(180deg,#fff0d6,#fff8e9)}
+[data-theme="yellow"] .letters-chapter{background:linear-gradient(150deg,#fff7e7,#ffe9de)}
+[data-theme="yellow"] .hope-chapter{background:linear-gradient(145deg,#fff5dd,#fff7e9)}
+[data-theme="yellow"] .arcade-chapter{background:linear-gradient(160deg,#fff0c4,#fff8e9)}
+[data-theme="yellow"] .date-chapter{background:linear-gradient(130deg,#ffeec9,#fff8e3)}

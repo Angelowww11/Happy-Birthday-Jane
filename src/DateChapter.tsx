@@ -22,8 +22,9 @@ export default function DateChapter() {
   return (
     <section className="chapter date-chapter" id="date">
       <div className="date-shell">
-        <div className="chapter-label">The next page / us</div>
+        <div className="chapter-label">One more page for us ♡</div>
         <div className="date-ticket">
+          <img className="date-flower" src="/assets/flowers/floral-corner.webp" alt="" aria-hidden="true" loading="lazy" />
           <div className="date-ticket-copy">
             <span className="date-ticket-top">♡ Please keep this day for us ♡</span>
             <div className="date-ticket-numeral">19<span>OCT</span></div>
@@ -36,7 +37,7 @@ export default function DateChapter() {
             <img src={content.usPhotos[4]?.src} alt="Jane and Angelo together outside" loading="lazy" />
             <span>you + me, again ♡</span>
           </div>
-          <img className="date-nailong" src={content.nailongAsset} alt="" />
+          <img className="date-nailong" src="/assets/nailong/flower-sticker.webp" alt="" />
         </div>
         <div className="countdown-panel" aria-label="Countdown to October 19, 2026">
           <div><span className="kicker">The countdown</span><h3>{left ? 'Until I see you again' : isTheDay ? 'Today is our day ♡' : 'Another day for our story ♡'}</h3></div>

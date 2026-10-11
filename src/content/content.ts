@@ -3,7 +3,7 @@ export type Photo = { src: string; thumb?: string; alt: string; caption: string;
 export const content = {
   herName: 'Janelle Genobata', nickname: 'Jane', petName: 'Baby', myName: 'Angelo',
   // Sticker cut from the little plush in one of our own photos.
-  nailongAsset: '/assets/nailong/plush-sticker.png',
+  nailongAsset: '/assets/nailong/plush-sticker.webp',
   birthday: '2007-10-12', dateNight: '2026-10-19',
   hero: { eyebrow: 'A little world for one very special person', title: 'Happy Birthday, Jane.', note: 'Nineteen looks lovely on you. I made this little place so you can come back and remember what I hope you always know: you matter, you are stronger than you think, and you are loved.' },
   herPhotos: [

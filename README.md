@@ -22,7 +22,7 @@ The photos used by the site are organized as `public/photos/her/` and `public/ph
 2. Edit `SELECTED` in `scripts/prepare_photos.py`, then run `python scripts/prepare_photos.py` with Pillow installed.
 3. Add matching image paths, captions, and descriptive alt text in `src/content/content.ts`.
 
-The Nailong sticker in `public/assets/nailong/plush-sticker.png` is a cutout of the small plush in one of the couple's own photos. Its path is configured as `nailongAsset` in `content.ts`.
+The Nailong stickers in `public/assets/nailong/` come from the small plush in one of the couple's own photos. The peony, magnolia, and mixed floral artwork in `public/assets/flowers/` were generated for this design. The main sticker path is configured as `nailongAsset` in `content.ts`.
 
 The site asks crawlers not to index it, but the Vercel URL is public. Avoid putting anything here that should remain secret. The opening envelope is for the experience, not authentication.
 

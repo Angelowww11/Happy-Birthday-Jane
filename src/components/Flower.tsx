@@ -1,6 +1,11 @@
-export function Flower({kind='peony',className=''}:{kind?:'peony'|'magnolia';className?:string}) {
-  const petals=kind==='peony'?8:6;
-  return <svg className={className} viewBox="0 0 120 120" fill="none" aria-hidden="true"><defs><radialGradient id={`petal-${kind}`}><stop stopColor={kind==='peony'?'#fff1ef':'#fffdf3'}/><stop offset="1" stopColor={kind==='peony'?'#e9a0b8':'#eed690'}/></radialGradient></defs><g transform="translate(60 60)">{Array.from({length:petals},(_,i)=><ellipse key={i} cx="0" cy="-31" rx={kind==='peony'?16:19} ry="31" transform={`rotate(${i*360/petals})`} fill={`url(#petal-${kind})`} stroke={kind==='peony'?'#d482a1':'#d2ad62'} strokeWidth="1.3"/>)}<circle r="15" fill="#f5d46b"/><circle r="8" fill="#fff4b2"/>{Array.from({length:8},(_,i)=><circle key={i} cy="-10" r="1.5" fill="#ac6c3e" transform={`rotate(${i*45})`}/>)}</g></svg>;
-}
 import { content } from '../content/content';
-export function Buddy({onClick}:{onClick?:()=>void}) {return <button className={`buddy ${content.nailongAsset?'has-asset':''}`} aria-label="Milk dragon buddy" onClick={onClick}>{content.nailongAsset?<img src={content.nailongAsset} alt=""/>:<><span className="buddy-horn left"/><span className="buddy-horn right"/><span className="buddy-face"><i/><i/><b>ᴗ</b></span></>}<small>milk dragon buddy</small></button>}
+
+export function Flower({ kind = 'peony', className = '' }: { kind?: 'peony' | 'magnolia'; className?: string }) {
+  return <img className={`flower-art ${className}`} src={`/assets/flowers/${kind}.webp`} alt="" aria-hidden="true" loading="lazy" />;
+}
+
+export function Buddy({ onClick }: { onClick?: () => void }) {
+  return <button className="buddy has-asset" aria-label="Nailong, the little yellow buddy" onClick={onClick}>
+    <img src={content.nailongAsset} alt="" /><small>say hi ♡</small>
+  </button>;
+}
