@@ -1,0 +1,7 @@
+drive-photos
+node_modules
+dist
+*.tsbuildinfo
+*-contact.jpg
+/*.png
+.env*

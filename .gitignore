@@ -6,3 +6,4 @@ drive-photos
 *-contact.jpg
 *.tsbuildinfo
 /*.png
+.env*
