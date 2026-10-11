@@ -1,0 +1,8 @@
+node_modules
+dist
+.vercel
+*.local
+drive-photos
+*-contact.jpg
+*.tsbuildinfo
+/*.png
