@@ -1,41 +1,204 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type PointerEvent, type ReactNode } from 'react';
 import { content } from './content/content';
 import { useGift } from './store';
 
-const rewards=[['petals','A flower for every day you kept going.'],['memory','My favorite memories have you in them.'],['hop','You make ordinary days feel lighter.'],['puzzle','Every piece led me to you.'],['quiz','You know us so well, baby.'],['scratch','There are so many reasons I love you.']];
-function GameShell({title,id,children}:{title:string;id:string;children:React.ReactNode}){const unlocked=useGift(s=>s.stickers.includes(id));return <section className="game-card"><div className="game-heading"><h3>{title}</h3><span>{unlocked?'Sticker collected ✿':'A sticker awaits'}</span></div>{children}</section>}
-function Win({id,again}:{id:string;again:()=>void}){const reward=rewards.find(x=>x[0]===id)?.[1];return <div className="game-win" role="status"><strong>You did it! ✿</strong><p>{reward}</p><button className="soft-button" onClick={again}>Play again</button></div>}
+const gameInfo = [
+  { id: 'petals', icon: '✿', name: 'Petal catch', blurb: 'Catch the good things' },
+  { id: 'memory', icon: '▣', name: 'Our photo match', blurb: 'Find our moments' },
+  { id: 'hop', icon: '♡', name: 'Nailong hop', blurb: 'Jump the clouds' },
+  { id: 'puzzle', icon: '✧', name: 'Picture puzzle', blurb: 'Piece us together' },
+  { id: 'quiz', icon: '?', name: 'The us quiz', blurb: 'A little love test' },
+  { id: 'scratch', icon: '★', name: 'Scratch notes', blurb: 'A surprise underneath' },
+] as const;
+type GameId = typeof gameInfo[number]['id'];
 
-function PetalCatch(){const unlock=useGift(s=>s.unlock);const [running,setRunning]=useState(false),[score,setScore]=useState(0),[basket,setBasket]=useState(50),[petals,setPetals]=useState<{id:number;x:number;y:number;gold:boolean}[]>([]);const count=useRef(0);const won=score>=12;
- useEffect(()=>{if(!running||won)return;const t=setInterval(()=>setPetals(old=>{const next=old.map(p=>({...p,y:p.y+4}));let gained=0;const remaining=next.filter(p=>{if(p.y>=88&&p.y<96&&Math.abs(p.x-basket)<14){gained+=p.gold?3:1;return false}return p.y<104});if(gained)setScore(s=>s+gained);if(Math.random()<.38)remaining.push({id:count.current++,x:8+Math.random()*84,y:-5,gold:Math.random()<.18});return remaining}),100);return()=>clearInterval(t)},[running,basket,won]);
- useEffect(()=>{if(won){unlock('petals');setRunning(false)}},[won,unlock]);
- const reset=()=>{setScore(0);setPetals([]);setRunning(true)};
- return <GameShell title="Petal catch" id="petals"><p>Move the basket to catch 12 points. Golden petals count as three.</p><div className="catch-field" onPointerMove={e=>{if(e.buttons||e.pointerType==='touch'){const r=e.currentTarget.getBoundingClientRect();setBasket(Math.max(8,Math.min(92,(e.clientX-r.left)/r.width*100)))}}} onPointerDown={e=>{const r=e.currentTarget.getBoundingClientRect();setBasket(Math.max(8,Math.min(92,(e.clientX-r.left)/r.width*100)));e.currentTarget.setPointerCapture(e.pointerId)}} tabIndex={0} onKeyDown={e=>{if(e.key==='ArrowLeft')setBasket(v=>Math.max(8,v-7));if(e.key==='ArrowRight')setBasket(v=>Math.min(92,v+7))}} aria-label="Petal catch play area. Arrow keys move basket.">{petals.map(p=><span key={p.id} className={`falling-game-petal ${p.gold?'gold':''}`} style={{left:`${p.x}%`,top:`${p.y}%`}}>✿</span>)}<span className="basket" style={{left:`${basket}%`}}>⌣</span></div><div className="game-actions"><b>{score} / 12</b>{won?<Win id="petals" again={reset}/>:<><button className="soft-button" onClick={()=>setRunning(v=>!v)}>{running?'Pause':'Play'}</button><button className="text-link" onClick={reset}>Restart</button></>}</div></GameShell>
+function Win({ id, onReplay, message }: { id: GameId; onReplay: () => void; message: string }) {
+  const unlocked = useGift(s => s.stickers.includes(id));
+  return <div className="game-win" role="status"><span className="win-sparkle">✦ ✿ ✦</span><strong>{unlocked ? 'A little win for us!' : 'You did it!'}</strong><p>{message}</p><button className="primary" onClick={onReplay}>Play again ↗</button></div>;
 }
-function MemoryMatch(){const unlock=useGift(s=>s.unlock);const pics=content.usPhotos.slice(0,4);const newDeck=()=>[...pics.map((_,i)=>i),...pics.map((_,i)=>i)].sort(()=>Math.random()-.5);const [deck,setDeck]=useState(newDeck);const [flipped,setFlipped]=useState<number[]>([]),[matched,setMatched]=useState<number[]>([]);const busy=useRef(false);const won=matched.length===pics.length&&pics.length>0;
- useEffect(()=>{if(won)unlock('memory')},[won,unlock]);
- function turn(i:number){if(busy.current||flipped.includes(i)||matched.includes(deck[i]))return;const next=[...flipped,i];setFlipped(next);if(next.length===2){busy.current=true;setTimeout(()=>{if(deck[next[0]]===deck[next[1]])setMatched(v=>[...v,deck[i]]);setFlipped([]);busy.current=false},850)}}
- const reset=()=>{setDeck(newDeck());setMatched([]);setFlipped([])};
- return <GameShell title="Memory match: us" id="memory"><p>Find four matching moments. Each pair is a little piece of us.</p>{pics.length?<div className="memory-grid">{deck.map((v,i)=><button key={i} className={`memory-card ${flipped.includes(i)||matched.includes(v)?'flipped':''}`} onClick={()=>turn(i)} aria-label={flipped.includes(i)||matched.includes(v)?pics[v].alt:'Face-down memory card'}>{flipped.includes(i)||matched.includes(v)?<img src={pics[v].thumb||pics[v].src} alt={pics[v].alt}/>:<span>♡</span>}</button>)}</div>:<p>Add your photos to play.</p>}{won?<Win id="memory" again={reset}/>:<button className="text-link" onClick={reset}>Shuffle again</button>}</GameShell>
+
+function PetalCatch() {
+  const unlock = useGift(s => s.unlock);
+  const [running, setRunning] = useState(false), [score, setScore] = useState(0), [seconds, setSeconds] = useState(30);
+  const [basket, setBasket] = useState(50), [petals, setPetals] = useState<{ id: number; x: number; y: number; gold: boolean }[]>([]);
+  const id = useRef(0), petalsRef = useRef<typeof petals>([]), basketRef = useRef(50);
+  const won = score >= 12, ended = seconds === 0 && !won;
+  useEffect(() => {
+    if (!running || won || ended) return;
+    const timer = window.setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
+    return () => window.clearInterval(timer);
+  }, [running, won, ended]);
+  useEffect(() => {
+    if (!running || won || ended) return;
+    const timer = window.setInterval(() => {
+      const moved = petalsRef.current.map(p => ({ ...p, y: p.y + 3.8 }));
+      let earned = 0;
+      const left = moved.filter(p => {
+        if (p.y >= 85 && p.y <= 95 && Math.abs(p.x - basketRef.current) < 13) { earned += p.gold ? 3 : 1; return false; }
+        return p.y < 105;
+      });
+      if (earned) setScore(s => s + earned);
+      if (Math.random() < .42) left.push({ id: id.current++, x: 8 + Math.random() * 84, y: -6, gold: Math.random() < .19 });
+      petalsRef.current = left;
+      setPetals(left);
+    }, 100);
+    return () => window.clearInterval(timer);
+  }, [running, won, ended]);
+  useEffect(() => { if (won) { unlock('petals'); setRunning(false); } }, [won, unlock]);
+  const restart = () => { petalsRef.current = []; setScore(0); setSeconds(30); setPetals([]); setRunning(true); };
+  const move = (e: PointerEvent<HTMLDivElement>) => { const r = e.currentTarget.getBoundingClientRect(); const next = Math.max(9, Math.min(91, (e.clientX - r.left) / r.width * 100)); basketRef.current = next; setBasket(next); };
+  return <div className="game-body"><div className="game-instructions"><h3>Petal catch</h3><p>Catch 12 points before the timer ends. Golden flowers are worth three. Drag the basket or use the arrow keys.</p></div>
+    <div className="game-scorebar"><span>✿ {score} / 12</span><span>◷ {seconds}s</span></div>
+    <div className="catch-field" tabIndex={0} onPointerDown={e => { move(e); e.currentTarget.setPointerCapture(e.pointerId); }} onPointerMove={e => { if (e.buttons || e.pointerType === 'touch') move(e); }} onKeyDown={e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); const next = Math.max(9, Math.min(91, basketRef.current + (e.key === 'ArrowLeft' ? -7 : 7))); basketRef.current = next; setBasket(next); } }} aria-label="Petal catch. Drag or use arrow keys to move the basket.">
+      <span className="field-cloud field-cloud-one">☁</span><span className="field-cloud field-cloud-two">☁</span>
+      {petals.map(p => <span key={p.id} className={`falling-game-petal ${p.gold ? 'gold' : ''}`} style={{ left: `${p.x}%`, top: `${p.y}%` }}>{p.gold ? '✦' : '✿'}</span>)}
+      <span className="basket" style={{ left: `${basket}%` }}>♡</span>
+    </div>
+    {won ? <Win id="petals" onReplay={restart} message="A flower for every day you kept going. I notice all of them." /> : ended ? <div className="game-end"><p>So close! The flowers are still here for you.</p><button className="primary" onClick={restart}>Try again ↗</button></div> : <div className="game-actions"><button className="primary" onClick={() => setRunning(v => !v)}>{running ? 'Pause game' : score ? 'Keep catching' : 'Start catching'}</button><button className="text-link" onClick={restart}>Restart</button></div>}
+  </div>;
 }
-function DragonHop(){const unlock=useGift(s=>s.unlock);const [running,setRunning]=useState(false),[score,setScore]=useState(0),[jump,setJump]=useState(false),[obstacles,setObstacles]=useState<{id:number;x:number}[]>([]);const id=useRef(0),counted=useRef(new Set<number>());const won=score>=8;
- useEffect(()=>{if(!running||won)return;const t=setInterval(()=>{setObstacles(old=>{const moved=old.map(o=>({...o,x:o.x-5}));for(const obstacle of moved){if(obstacle.x<=18&&obstacle.x>=10&&!counted.current.has(obstacle.id)){counted.current.add(obstacle.id);if(jump)setScore(s=>s+1)}}const rest=moved.filter(o=>o.x>=0);if(rest.length===0||rest[rest.length-1].x<65)rest.push({id:id.current++,x:105});return rest});},220);return()=>clearInterval(t)},[running,won,jump]);
- useEffect(()=>{if(won){unlock('hop');setRunning(false)}},[won,unlock]);
- function doJump(){setJump(true);setTimeout(()=>setJump(false),500)}
- const reset=()=>{setScore(0);setObstacles([]);counted.current.clear();setRunning(true)};
- return <GameShell title="Milk dragon hop" id="hop"><p>Hop through eight little clouds. This buddy is wonderfully hard to stop.</p><div className="hop-field" tabIndex={0} onKeyDown={e=>{if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();doJump()}}} onPointerDown={doJump} aria-label="Hop game. Tap or press Space to jump."><span className={`hop-buddy ${jump?'jump':''} ${content.nailongAsset?'has-asset':''}`}>{content.nailongAsset?<img src={content.nailongAsset} alt=""/>:<i>ᴗ</i>}</span>{obstacles.map(o=><span key={o.id} className="hop-cloud" style={{left:`${o.x}%`}}>☁</span>)}<span className="hop-ground"/></div><div className="game-actions"><b>{score} / 8 clouds</b>{won?<Win id="hop" again={reset}/>:<><button className="soft-button" onClick={()=>setRunning(v=>!v)}>{running?'Pause':'Play'}</button><button className="soft-button" onClick={doJump}>Hop!</button><button className="text-link" onClick={reset}>Restart</button></>}</div></GameShell>
+
+function shuffleDeck() { return [0, 1, 2, 3, 0, 1, 2, 3].sort(() => Math.random() - .5); }
+function MemoryMatch() {
+  const unlock = useGift(s => s.unlock), pics = content.usPhotos.slice(0, 4);
+  const [deck, setDeck] = useState(shuffleDeck), [flipped, setFlipped] = useState<number[]>([]), [matched, setMatched] = useState<number[]>([]);
+  const [moves, setMoves] = useState(0), [caption, setCaption] = useState('Tap any two cards to find a memory.');
+  const busy = useRef(false);
+  const won = matched.length === 4;
+  useEffect(() => { if (won) unlock('memory'); }, [won, unlock]);
+  function turn(i: number) {
+    if (busy.current || flipped.includes(i) || matched.includes(deck[i])) return;
+    const next = [...flipped, i]; setFlipped(next);
+    if (next.length === 2) {
+      busy.current = true; setMoves(n => n + 1);
+      window.setTimeout(() => {
+        if (deck[next[0]] === deck[next[1]]) { setMatched(old => [...old, deck[i]]); setCaption(pics[deck[i]].caption); }
+        else setCaption('Not a pair yet. Try another two ♡');
+        setFlipped([]); busy.current = false;
+      }, 850);
+    }
+  }
+  const restart = () => { setDeck(shuffleDeck()); setFlipped([]); setMatched([]); setMoves(0); setCaption('Tap any two cards to find a memory.'); };
+  return <div className="game-body"><div className="game-instructions"><h3>Our photo match</h3><p>Four photos, eight cards, and a few moments I never want to forget. Find the pairs to reveal their little notes.</p></div>
+    <div className="game-scorebar"><span>♡ {matched.length} / 4 pairs</span><span>{moves} turns</span></div>
+    <div className="memory-grid">{deck.map((v, i) => { const faceUp = flipped.includes(i) || matched.includes(v); return <button key={i} className={`memory-card ${faceUp ? 'flipped' : ''} ${matched.includes(v) ? 'matched' : ''}`} onClick={() => turn(i)} aria-label={faceUp ? pics[v].alt : `Hidden memory card ${i + 1}`} aria-pressed={faceUp}><span className="memory-card-back">♡<small>US</small></span><img src={pics[v].src} alt="" loading="lazy" /></button>; })}</div>
+    <div className="memory-caption" role="status">✉ {caption}</div>
+    {won ? <Win id="memory" onReplay={restart} message="My favorite memories have you in them. More to come, baby." /> : <div className="game-actions"><button className="text-link" onClick={restart}>Shuffle and start over ↗</button></div>}
+  </div>;
 }
-function PhotoPuzzle(){const unlock=useGift(s=>s.unlock);const pic=content.usPhotos[0];const shuffled=()=>{const a=[0,1,2,3,4,5,6,7,8];for(let i=0;i<40;i++){const blank=a.indexOf(8),n=[blank-3,blank+3,blank%3?blank-1:-1,blank%3<2?blank+1:-1].filter(x=>x>=0&&x<9);const t=n[Math.floor(Math.random()*n.length)];[a[blank],a[t]]=[a[t],a[blank]]}return a};const [tiles,setTiles]=useState(shuffled),[peek,setPeek]=useState(false);const won=tiles.every((n,i)=>n===i);
- useEffect(()=>{if(won)unlock('puzzle')},[won,unlock]);
- function move(i:number){const blank=tiles.indexOf(8);if(Math.abs(Math.floor(blank/3)-Math.floor(i/3))+Math.abs(blank%3-i%3)!==1)return;setTiles(v=>{const a=[...v];[a[i],a[blank]]=[a[blank],a[i]];return a})}
- return <GameShell title="Photo puzzle" id="puzzle"><p>Slide the pieces to put our picture back together.</p>{pic?<><div className="puzzle-grid">{tiles.map((tile,i)=><button key={i} className={`puzzle-tile ${tile===8?'empty':''}`} onClick={()=>move(i)} aria-label={tile===8?'Empty space':`Move tile ${tile+1}`} style={tile!==8?{backgroundImage:`url(${pic.src})`,backgroundPosition:`${tile%3*50}% ${Math.floor(tile/3)*50}%`}:undefined}/>)}</div>{peek&&<div className="puzzle-peek"><img src={pic.src} alt={pic.alt}/></div>}<div className="game-actions"><button className="soft-button" onClick={()=>setPeek(v=>!v)}>{peek?'Hide photo':'Peek at photo'}</button><button className="text-link" onClick={()=>setTiles(shuffled())}>Restart</button></div>{won&&<Win id="puzzle" again={()=>setTiles(shuffled())}/>}</>:<p>Add a together photo to play.</p>}</GameShell>
+
+function DragonHop() {
+  const unlock = useGift(s => s.unlock);
+  const [running, setRunning] = useState(false), [score, setScore] = useState(0), [misses, setMisses] = useState(0), [jump, setJump] = useState(false);
+  const [clouds, setClouds] = useState<{ id: number; x: number }[]>([]), nextId = useRef(0), counted = useRef(new Set<number>());
+  const cloudsRef = useRef<typeof clouds>([]), jumpRef = useRef(false), jumpTimer = useRef<number | undefined>(undefined);
+  const won = score >= 6;
+  useEffect(() => {
+    if (!running || won) return;
+    const timer = window.setInterval(() => {
+      const moved = cloudsRef.current.map(c => ({ ...c, x: c.x - 2.6 }));
+      for (const cloud of moved) if (cloud.x <= 20 && cloud.x >= 16 && !counted.current.has(cloud.id)) {
+        counted.current.add(cloud.id); if (jumpRef.current) setScore(n => n + 1); else setMisses(n => n + 1);
+      }
+      const left = moved.filter(c => c.x >= -10);
+      if (!left.length || left[left.length - 1].x < 60) left.push({ id: nextId.current++, x: 105 });
+      cloudsRef.current = left;
+      setClouds(left);
+    }, 75);
+    return () => window.clearInterval(timer);
+  }, [running, won]);
+  useEffect(() => { if (won) { unlock('hop'); setRunning(false); } }, [won, unlock]);
+  const jumpNow = () => { if (!running) return; window.clearTimeout(jumpTimer.current); jumpRef.current = true; setJump(true); jumpTimer.current = window.setTimeout(() => { jumpRef.current = false; setJump(false); }, 650); };
+  const restart = () => { window.clearTimeout(jumpTimer.current); cloudsRef.current = []; jumpRef.current = false; setScore(0); setMisses(0); setClouds([]); counted.current.clear(); setJump(false); setRunning(true); };
+  return <div className="game-body"><div className="game-instructions"><h3>Nailong hop</h3><p>Help our little yellow friend hop over six clouds. Tap the stage, hit Space, or press Hop when a cloud gets close.</p></div>
+    <div className="game-scorebar"><span>♡ {score} / 6 hops</span><span>{misses} soft landings</span></div>
+    <div className="hop-field" tabIndex={0} onPointerDown={jumpNow} onKeyDown={e => { if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); jumpNow(); } }} aria-label="Nailong hop. Tap or press Space to jump over clouds.">
+      <span className="hop-sun">✦</span><span className="hop-hills"/><img className={`hop-buddy ${jump ? 'jump' : ''}`} src={content.nailongAsset} alt="" />
+      {clouds.map(c => <span key={c.id} className="hop-cloud" style={{ left: `${c.x}%` }}>☁</span>)}<span className="hop-ground" />
+    </div>
+    {won ? <Win id="hop" onReplay={restart} message="You make ordinary days feel lighter. Even the cloudy ones." /> : <div className="game-actions"><button className="primary" onClick={() => setRunning(v => !v)}>{running ? 'Pause game' : score || misses ? 'Keep hopping' : 'Start hopping'}</button><button className="soft-button" onClick={jumpNow}>Hop! ↑</button><button className="text-link" onClick={restart}>Restart</button></div>}
+  </div>;
 }
-function LoveQuiz(){const unlock=useGift(s=>s.unlock);const [index,setIndex]=useState(0),[score,setScore]=useState(0),[selected,setSelected]=useState<number|null>(null);const done=index>=content.quiz.length;useEffect(()=>{if(done)unlock('quiz')},[done,unlock]);const q=content.quiz[index];const reset=()=>{setIndex(0);setScore(0);setSelected(null)};
- return <GameShell title="How well do you know us?" id="quiz">{done?<><p>You got {score} of {content.quiz.length}. Every ending is a win when it's us.</p><Win id="quiz" again={reset}/></>:<><span className="kicker">Question {index+1} / {content.quiz.length}</span><h4>{q.q}</h4><div className="quiz-options">{q.options.map((o,i)=><button className={`soft-button ${selected===i?'selected':''}`} key={o} onClick={()=>{if(selected===null){setSelected(i);if(i===q.answer)setScore(s=>s+1)}}}>{o}</button>)}</div>{selected!==null&&<div className="quiz-answer" role="status"><p>{selected===q.answer?'You got it!':'I still love your answer.'} {q.note}</p><button className="primary" onClick={()=>{setIndex(v=>v+1);setSelected(null)}}>Next question</button></div>}</>}</GameShell>
+
+function shuffledPuzzle() {
+  const a = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  for (let i = 0; i < 45; i++) {
+    const blank = a.indexOf(8);
+    const neighbors = [blank - 3, blank + 3, blank % 3 ? blank - 1 : -1, blank % 3 < 2 ? blank + 1 : -1].filter(n => n >= 0 && n < 9);
+    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+    [a[blank], a[next]] = [a[next], a[blank]];
+  }
+  return a;
 }
-function ScratchCard(){const unlock=useGift(s=>s.unlock);const [index,setIndex]=useState(0),[revealed,setRevealed]=useState(false);const canvas=useRef<HTMLCanvasElement>(null),drawing=useRef(false),strokes=useRef(0);
- useEffect(()=>{const c=canvas.current;if(!c)return;const ctx=c.getContext('2d');if(!ctx)return;const ratio=window.devicePixelRatio||1;c.width=320*ratio;c.height=160*ratio;ctx.scale(ratio,ratio);ctx.fillStyle='#e7abc0';ctx.fillRect(0,0,320,160);ctx.fillStyle='#733f53';ctx.font='600 26px Georgia';ctx.textAlign='center';ctx.fillText('Scratch me ♡',160,85);strokes.current=0;setRevealed(false)},[index]);
- function scratch(e:React.PointerEvent<HTMLCanvasElement>){if(!drawing.current||revealed)return;const c=canvas.current,ctx=c?.getContext('2d');if(!c||!ctx)return;const r=c.getBoundingClientRect();ctx.globalCompositeOperation='destination-out';ctx.beginPath();ctx.arc((e.clientX-r.left)/r.width*320,(e.clientY-r.top)/r.height*160,20,0,Math.PI*2);ctx.fill();strokes.current++;if(strokes.current>24){setRevealed(true);unlock('scratch')}}
- return <GameShell title="Scratch & reveal" id="scratch"><p>A little reason for every time you need one.</p><div className="scratch-card"><span>{content.scratch[index]}</span>{!revealed&&<canvas ref={canvas} onPointerDown={e=>{drawing.current=true;e.currentTarget.setPointerCapture(e.pointerId);scratch(e)}} onPointerMove={scratch} onPointerUp={()=>drawing.current=false} aria-label="Scratch card. Drag your finger or mouse to reveal a reason."/>}</div><div className="game-actions"><button className="soft-button" onClick={()=>{setRevealed(true);unlock('scratch')}}>Reveal</button><button className="text-link" onClick={()=>setIndex(v=>(v+1)%content.scratch.length)}>Next reason</button></div></GameShell>
+function PhotoPuzzle() {
+  const unlock = useGift(s => s.unlock), pic = content.usPhotos[0];
+  const [tiles, setTiles] = useState(shuffledPuzzle), [peek, setPeek] = useState(false), [moves, setMoves] = useState(0);
+  const won = tiles.every((n, i) => n === i);
+  useEffect(() => { if (won) unlock('puzzle'); }, [won, unlock]);
+  function move(i: number) {
+    const blank = tiles.indexOf(8);
+    if (Math.abs(Math.floor(blank / 3) - Math.floor(i / 3)) + Math.abs(blank % 3 - i % 3) !== 1) return;
+    setTiles(old => { const next = [...old]; [next[i], next[blank]] = [next[blank], next[i]]; return next; });
+    setMoves(n => n + 1);
+  }
+  const restart = () => { setTiles(shuffledPuzzle()); setMoves(0); setPeek(false); };
+  return <div className="game-body"><div className="game-instructions"><h3>Picture puzzle</h3><p>Slide the tiles into the empty space to bring our photo back together. Peek as often as you like.</p></div>
+    <div className="game-scorebar"><span>✧ {moves} moves</span><span>3 × 3 pieces</span></div>
+    <div className="puzzle-wrap"><div className="puzzle-grid">{tiles.map((tile, i) => <button key={i} className={`puzzle-tile ${tile === 8 ? 'empty' : ''}`} onClick={() => move(i)} aria-label={tile === 8 ? 'Empty space' : `Move photo tile ${tile + 1}`} style={tile !== 8 ? { backgroundImage: `url(${pic.src})`, backgroundPosition: `${tile % 3 * 50}% ${Math.floor(tile / 3) * 50}%` } : undefined} />)}</div>{peek && <div className="puzzle-peek"><img src={pic.src} alt={pic.alt} /></div>}</div>
+    {won ? <Win id="puzzle" onReplay={restart} message="Every piece led me to you. I would choose this picture again." /> : <div className="game-actions"><button className="soft-button" onClick={() => setPeek(v => !v)}>{peek ? 'Hide photo' : 'Peek at photo'}</button><button className="text-link" onClick={restart}>Mix the pieces ↗</button></div>}
+  </div>;
 }
-export default function Games(){const stickers=useGift(s=>s.stickers);return <section className="chapter arcade-chapter" id="arcade"><div className="chapter-label">Chapter six / the little arcade</div><div className="chapter-intro"><span className="kicker">Play for a while</span><h2>A tiny arcade, just for us.</h2><p>Nothing here is meant to be hard. Every game holds a little note.</p></div><div className="collection"><b>Our collection</b><span>{stickers.length} of {rewards.length} stickers</span><div className="sticker-row">{rewards.map(([id,note])=><span key={id} title={stickers.includes(id)?note:'Keep playing to find this note'} className={stickers.includes(id)?'found':''}>{stickers.includes(id)?'✿':'♡'}</span>)}</div></div><div className="games-grid"><PetalCatch/><MemoryMatch/><DragonHop/><PhotoPuzzle/><LoveQuiz/><ScratchCard/></div></section>}
+
+function LoveQuiz() {
+  const unlock = useGift(s => s.unlock);
+  const [index, setIndex] = useState(0), [score, setScore] = useState(0), [selected, setSelected] = useState<number | null>(null);
+  const done = index >= content.quiz.length;
+  const order = useMemo(() => { const indices = [0, 1, 2]; const shift = (index * 2 + 1) % 3; return [...indices.slice(shift), ...indices.slice(0, shift)]; }, [index]);
+  useEffect(() => { if (done) unlock('quiz'); }, [done, unlock]);
+  const question = content.quiz[index];
+  const restart = () => { setIndex(0); setScore(0); setSelected(null); };
+  return <div className="game-body"><div className="game-instructions"><h3>The us quiz</h3><p>Ten tiny questions about Jane, Angelo, and all the things that make this ours. Every score gets a happy ending.</p></div>
+    {done ? <><p className="quiz-total">{score} / {content.quiz.length} right. Still my favorite person to play with.</p><Win id="quiz" onReplay={restart} message="No score could change how much I love us." /></> : <>
+      <div className="quiz-progress"><span style={{ width: `${index / content.quiz.length * 100}%` }} /></div><span className="kicker">QUESTION {index + 1} OF {content.quiz.length}</span><h4 className="quiz-question">{question.q}</h4>
+      <div className="quiz-options">{order.map((original, i) => <button className={`quiz-option ${selected === original ? 'selected' : ''} ${selected !== null && original === question.answer ? 'correct' : ''}`} key={original} onClick={() => { if (selected === null) { setSelected(original); if (original === question.answer) setScore(n => n + 1); } }}><span>{String.fromCharCode(65 + i)}</span>{question.options[original]}</button>)}</div>
+      {selected !== null && <div className="quiz-answer" role="status"><p>{selected === question.answer ? 'You got it! ♡' : 'A cute guess. ♡'} {question.note}</p><button className="primary" onClick={() => { setIndex(n => n + 1); setSelected(null); }}>Next question ↗</button></div>}
+    </>}
+  </div>;
+}
+
+function ScratchCard() {
+  const unlock = useGift(s => s.unlock);
+  const [index, setIndex] = useState(0), [revealed, setRevealed] = useState(false), canvas = useRef<HTMLCanvasElement>(null);
+  const drawing = useRef(false), strokes = useRef(0);
+  useEffect(() => {
+    const element = canvas.current, ctx = element?.getContext('2d'); if (!element || !ctx) return;
+    const ratio = window.devicePixelRatio || 1; element.width = 420 * ratio; element.height = 210 * ratio; ctx.scale(ratio, ratio);
+    ctx.fillStyle = '#f07aa9'; ctx.fillRect(0, 0, 420, 210);
+    ctx.fillStyle = '#fff5cd'; ctx.font = 'bold 32px Fredoka, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('scratch here ♡', 210, 115);
+    strokes.current = 0; setRevealed(false);
+  }, [index]);
+  function scratch(e: PointerEvent<HTMLCanvasElement>) {
+    if (!drawing.current || revealed) return;
+    const el = canvas.current, ctx = el?.getContext('2d'); if (!el || !ctx) return;
+    const r = el.getBoundingClientRect(); ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath();
+    ctx.arc((e.clientX - r.left) / r.width * 420, (e.clientY - r.top) / r.height * 210, 24, 0, Math.PI * 2); ctx.fill();
+    if (++strokes.current > 21) { setRevealed(true); unlock('scratch'); }
+  }
+  const next = () => { setRevealed(false); setIndex(n => (n + 1) % content.scratch.length); };
+  return <div className="game-body"><div className="game-instructions"><h3>Scratch notes</h3><p>There are twelve reasons underneath these cards. Drag your finger or mouse across the pink to reveal one.</p></div>
+    <div className="game-scorebar"><span>★ REASON {index + 1} / {content.scratch.length}</span><span>made for Jane</span></div>
+    <div className="scratch-card"><span>{content.scratch[index]}</span>{!revealed && <canvas ref={canvas} onPointerDown={e => { drawing.current = true; e.currentTarget.setPointerCapture(e.pointerId); scratch(e); }} onPointerMove={scratch} onPointerUp={() => drawing.current = false} aria-label="Scratch to reveal a reason I love you" />}</div>
+    <div className="game-actions"><button className="soft-button" onClick={() => { setRevealed(true); unlock('scratch'); }}>Reveal for me</button><button className="text-link" onClick={next}>Next reason ↗</button></div>
+  </div>;
+}
+
+export default function Games() {
+  const [active, setActive] = useState<GameId>('memory');
+  const stickers = useGift(s => s.stickers);
+  const games: Record<GameId, ReactNode> = { petals: <PetalCatch />, memory: <MemoryMatch />, hop: <DragonHop />, puzzle: <PhotoPuzzle />, quiz: <LoveQuiz />, scratch: <ScratchCard /> };
+  return <section className="chapter arcade-chapter" id="arcade"><div className="chapter-label">Jane's tiny arcade / 06</div><div className="arcade-heading"><div><span className="kicker">A little silly, a little us</span><h2>Let's <em>play.</em></h2><p>Pick a game. Every little win adds a sticker to our collection.</p></div><img src={content.nailongAsset} alt="" /></div>
+    <div className="arcade-layout"><div className="arcade-sidebar"><div className="arcade-menu-label">CHOOSE A GAME ↓</div>{gameInfo.map(game => <button className={`arcade-tab ${active === game.id ? 'active' : ''}`} key={game.id} onClick={() => setActive(game.id)} aria-pressed={active === game.id}><span className="arcade-tab-icon">{game.icon}</span><span><strong>{game.name}</strong><small>{game.blurb}</small></span><b>{stickers.includes(game.id) ? '✓' : '↗'}</b></button>)}<div className="collection"><div><span className="kicker">Our sticker book</span><strong>{stickers.filter(id => gameInfo.some(game => game.id === id)).length} / 6</strong></div><div className="sticker-row">{gameInfo.map(game => <span key={game.id} className={stickers.includes(game.id) ? 'found' : ''}>{stickers.includes(game.id) ? game.icon : '♡'}</span>)}</div></div></div>
+      <div className="arcade-stage" key={active}>{games[active]}</div>
+    </div>
+  </section>;
+}
