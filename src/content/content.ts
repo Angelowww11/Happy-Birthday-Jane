@@ -14,7 +14,7 @@ export const content = {
     {src:'/photos/her/her-5.webp',thumb:'/photos/her/her-5-tiny.webp',alt:'Jane making a playful pout in a white blouse by orange curtains',caption:'Even your pout makes me smile. I hope you never stop sending me your funny little faces.'},
     {src:'/photos/her/her-6.webp',thumb:'/photos/her/her-6-tiny.webp',alt:'Jane tilting her head and smiling softly in a black layer over a white shirt',caption:'I like the way you look at me in this one. It makes me want to sit beside you and hear about your day.'},
     {src:'/photos/her/her-7.webp',thumb:'/photos/her/her-7-tiny.webp',alt:'Jane looking into the camera in a close selfie with a small necklace',caption:'I never get tired of seeing you. I still get that little happy feeling when your photo shows up.'},
-    {src:'/photos/her/her-8.webp',thumb:'/photos/her/her-8-tiny.webp',alt:'Jane winking with two braids and one finger on her cheek',caption:'This one is unfair. That wink gets me every time, baby.'}
+    {src:'/photos/her/her-8.webp',thumb:'/photos/her/her-8-tiny.webp',alt:'Jane winking with two braids and one finger on her cheek',caption:'I smile like an idiot whenever I see this photo. You are so cute, baby.'}
   ] as Photo[],
   usPhotos: [
     {src:'/photos/us/us-1.webp',thumb:'/photos/us/us-1-tiny.webp',alt:'Jane and Angelo posing with the little yellow Nailong plush between them',caption:'I love how we ended up smiling with our little yellow buddy between us. Being silly with you is easy.',date:'October 2025',scene:'Our little world'},
