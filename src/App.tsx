@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { content, type Photo as PhotoType } from './content/content';
 import { Buddy, Flower } from './components/Flower';
+import { Garden } from './components/Garden';
 import { Photo } from './components/Photo';
 import { useGift } from './store';
 
@@ -246,13 +247,12 @@ function Letters() {
 
 function Hope() {
   const [note, setNote] = useState<number | null>(null), [affirmation, setAffirmation] = useState(0);
-  const blooms = useGift(s => s.blooms), bloom = useGift(s => s.bloom);
   return <section className="chapter hope-chapter" id="hope">
     <div className="chapter-label">A soft place to land ♡</div>
     <img className="section-flower hope-flower" src="/assets/flowers/magnolia.webp" alt="" aria-hidden="true" />
     <div className="chapter-intro"><span className="kicker">For the harder days</span><h2>Come here when<br/><em>you need a pause.</em></h2><p>Things can get better. You can do this. And you do not have to do it alone.</p></div>
     <div className="hope-grid"><div className="hope-card open-when"><h3>Open when...</h3><div className="when-grid">{content.openWhen.map((x, i) => <button key={x.label} className={note === i ? 'active' : ''} onClick={() => setNote(i)}>✉ <span>{x.label}</span></button>)}</div><div className="when-message" role="status" key={note ?? 'empty'}>{note === null ? 'Choose the note you need today.' : content.openWhen[note].message}</div></div>
-      <div className="hope-card garden"><h3>The still-going garden</h3><p>Every little step counts. Plant one whenever you need to remember that.</p><div className="garden-bed" aria-label={`${blooms} flowers grown`}>{Array.from({ length: Math.min(blooms, 12) }, (_, i) => <Flower key={i} kind={i % 2 ? 'magnolia' : 'peony'} />)}</div><button className="primary" onClick={() => { bloom(); setAffirmation(x => (x + 1) % content.affirmations.length); }}>I'm still going ✿</button><p className="garden-affirmation">{content.affirmations[affirmation]}</p></div>
+      <Garden />
       <div className="hope-card breathe"><div className="breathing-flower"><Flower kind="magnolia" /></div><h3>One breath at a time</h3><p>Breathe in as the flower grows. Breathe out as it settles.</p><button className="soft-button" onClick={() => setAffirmation(x => (x + 1) % content.affirmations.length)}>Another gentle reminder</button><p role="status">{content.affirmations[affirmation]}</p></div>
     </div>
     <img className="floral-sweep hope-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />

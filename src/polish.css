@@ -113,3 +113,52 @@ body,.chapter,.chapter-nav,.hero-board,.hope-card,.arcade-stage,.arcade-sidebar,
 .install-help h3{margin:.25rem 0 .7rem;color:var(--ink);font:700 2rem/1.05 Fredoka,sans-serif}
 .install-help p{margin:0 0 1rem;font:700 1rem/1.5 Nunito,sans-serif;color:var(--ink)}
 .install-help small{display:block;color:var(--muted);font:700 .77rem/1.45 Nunito,sans-serif}
+
+/* An interactive little landscape: plant, water, bloom, begin again. */
+.garden{position:relative;isolation:isolate;overflow:hidden;padding:clamp(1.25rem,2.5vw,2rem);background:linear-gradient(145deg,var(--paper),var(--gallery-wash) 160%);border:1px solid #fff;box-shadow:0 19px 38px var(--theme-shadow)}
+.garden:before{content:'';position:absolute;z-index:-1;right:-48px;top:-90px;width:210px;height:210px;background:url('/assets/flowers/birthday-garland.webp') center/contain no-repeat;opacity:.28;rotate:45deg;pointer-events:none}
+.garden-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.garden-heading h3{font-size:clamp(2rem,3vw,2.7rem);line-height:1.03;margin:.2rem 0 .75rem}
+.garden-eyebrow{font:700 1.25rem Caveat,cursive;color:var(--pink-deep)}
+.garden-count{display:grid;place-items:center;flex:none;min-width:72px;padding:.6rem .35rem;border:2px solid #fff;border-radius:18px 18px 25px 17px;background:var(--accent-wash);box-shadow:0 7px 13px var(--theme-shadow);color:var(--pink-deep);font:700 1.3rem/1 Fredoka,sans-serif;rotate:7deg}
+.garden-count small{display:block;margin-top:.25rem;font:900 .56rem Nunito,sans-serif;text-transform:uppercase;letter-spacing:.09em}
+.garden>p{margin:.1rem 0 1rem;font-size:.95rem;line-height:1.5}
+.garden-seeds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .8rem}
+.garden-seed-option{display:flex;align-items:center;justify-content:center;gap:.25rem;min-width:0;padding:.32rem .4rem;border:2px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);font:900 .72rem Nunito,sans-serif;cursor:pointer;transition:transform .2s,background .2s,box-shadow .2s}
+.garden-seed-option img{width:37px;height:39px;object-fit:contain;flex:none}
+.garden-seed-option.sunny img,.garden-plot.sunny .garden-grown-flower{filter:drop-shadow(0 5px 4px #85674655)}
+.garden-seed-option.selected{background:var(--accent-wash);border-color:var(--pink-deep);box-shadow:0 4px 0 var(--pink);transform:translateY(-3px)}
+.garden-seed-option:hover{transform:translateY(-3px)}
+.garden-scene{position:relative;isolation:isolate;width:100%;height:280px;overflow:hidden;border:5px solid #fff;border-radius:25px 30px 18px 18px;background:radial-gradient(circle at 73% 16%,#fffbd1 0 11%,transparent 12%),linear-gradient(180deg,#eaf5ee 0%,#fff9e8 65%,#fae8d9 100%);box-shadow:inset 0 0 0 1px #d8e6d6,0 13px 24px var(--theme-shadow)}
+.garden-sun{position:absolute;z-index:1;top:8px;right:15%;display:grid;place-items:center;width:65px;height:65px;border-radius:50%;background:#ffe487;color:#fff8e5;font-size:2.6rem;box-shadow:0 0 0 13px #fff3b77a;animation:twinkle 6s ease-in-out infinite}
+.garden-cloud{position:absolute;z-index:1;width:60px;height:18px;border-radius:40px;background:#fff9;box-shadow:0 5px 12px #acc7ba55;animation:cloud-drift 8s ease-in-out infinite}
+.garden-cloud:before,.garden-cloud:after{content:'';position:absolute;bottom:4px;border-radius:50%;background:#fff}
+.garden-cloud:before{left:11px;width:27px;height:27px}.garden-cloud:after{left:29px;width:22px;height:22px}
+.garden-cloud-one{top:25%;left:10%}.garden-cloud-two{top:39%;right:7%;scale:.65;animation-delay:-3s}
+.garden-hills{position:absolute;z-index:0;left:-5%;right:-5%;bottom:60px;height:100px;background:radial-gradient(ellipse at 15% 100%,#c9dca7 0 36%,transparent 37%),radial-gradient(ellipse at 75% 120%,#a9cd9b 0 44%,transparent 45%)}
+.garden-soil{position:absolute;z-index:1;left:0;right:0;bottom:0;height:76px;background:linear-gradient(180deg,#b9ae7e 0 5px,#b99a7d 6px,#a98270 100%);clip-path:polygon(0 16%,8% 10%,17% 15%,29% 8%,41% 16%,55% 10%,67% 15%,82% 7%,92% 13%,100% 8%,100% 100%,0 100%)}
+.garden-soil:after{content:'';position:absolute;inset:18px 0 0;background:repeating-linear-gradient(155deg,#ffffff18 0 2px,transparent 2px 22px);opacity:.6}
+.garden-plots{position:absolute;z-index:3;inset:0 9px 29px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end}
+.garden-plot{position:relative;display:block;width:100%;height:175px;min-width:0;overflow:visible;border:0;background:transparent;cursor:pointer;touch-action:manipulation;transition:transform .2s}
+.garden-plot:hover{transform:translateY(-4px)}.garden-plot:active{transform:scale(.95)}.garden-plot:focus-visible{outline:3px solid var(--pink-deep);outline-offset:-5px;border-radius:20px}
+.garden-plot-soil{position:absolute;z-index:4;left:18%;right:18%;bottom:-16px;height:14px;border-radius:50%;background:#8e6f5c;box-shadow:0 3px 5px #694d4f42}
+.garden-plot.is-bloom:before{content:'';position:absolute;z-index:4;left:calc(50% - 3px);bottom:-9px;width:6px;height:67px;border-radius:7px;background:linear-gradient(#90b67d,#6c9966)}
+.garden-plot.is-bloom:after{content:'';position:absolute;z-index:4;left:calc(50% - 24px);bottom:25px;width:23px;height:13px;border-radius:100% 0 100% 0;background:#8aad79;transform:rotate(19deg)}
+.garden-plant-here{position:absolute;z-index:5;left:50%;bottom:6px;display:grid;place-items:center;width:42px;height:42px;border:2px dashed #fff8;border-radius:50%;background:#fff7d9d9;box-shadow:0 4px 9px #6f654941;color:#bc5585;font:700 2rem Fredoka,sans-serif;transform:translateX(-50%);animation:target-pulse 3s ease-in-out infinite}
+.garden-sprout{position:absolute;z-index:5;left:50%;bottom:0;width:30px;height:71px;transform:translateX(-50%);transform-origin:bottom;animation:seed-rise .7s cubic-bezier(.19,1.5,.35,1) both}
+.garden-plot.is-sprout .garden-sprout{scale:.56;transform-origin:50% 100%}.garden-plot.is-sprout .garden-sprout:after{opacity:0}
+.garden-sprout i{position:absolute;left:14px;bottom:8px;width:6px;height:48px;border-radius:5px;background:#6b9c61}
+.garden-sprout b,.garden-sprout em{position:absolute;bottom:30px;width:22px;height:13px;border-radius:100% 0 100% 0;background:#87b47a}
+.garden-sprout b{left:-5px;transform:rotate(30deg)}.garden-sprout em{right:-5px;transform:scaleX(-1) rotate(30deg)}
+.garden-sprout:after{content:'';position:absolute;top:0;left:9px;width:16px;height:23px;border-radius:50% 50% 45% 45%;background:#ec9db7;box-shadow:inset 2px 2px 3px #fff9}.garden-plot.ivory .garden-sprout:after{background:#fff6e7}.garden-plot.sunny .garden-sprout:after{background:#ffdd82}
+.garden-grown-flower{position:absolute;z-index:5;left:50%;bottom:-4px;width:clamp(66px,8vw,108px);height:145px;object-fit:contain;transform:translateX(-50%);transform-origin:50% 100%;filter:drop-shadow(0 7px 5px #6c665b55);animation:garden-bloom-in .9s cubic-bezier(.2,1.4,.35,1) both,garden-sway 5s ease-in-out 1s infinite}
+.garden-rain{position:absolute;z-index:6;inset:0;pointer-events:none}.garden-rain span{position:absolute;top:-8px;width:4px;height:13px;border-radius:99px;background:#a9d9d7;opacity:0;animation:garden-drop .95s ease-in both}
+.garden-bottom{padding:.95rem .2rem .15rem}.garden-progress{height:9px;overflow:hidden;border-radius:99px;background:#e9e8cd;box-shadow:inset 0 2px 4px #9b927026}.garden-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#f6a7c3,#f3d56d);transition:width .55s cubic-bezier(.2,1,.3,1)}
+.garden-actions{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin:1rem 0}.garden-water{white-space:nowrap}.garden-water span{margin-left:.2rem;font-size:1.1rem}.garden-note{min-height:68px;margin:0!important;padding:.75rem .9rem;border-left:4px solid var(--pink);border-radius:5px 15px 15px 5px;background:var(--accent-wash);color:var(--ink)!important;font:700 .88rem/1.45 Nunito,sans-serif!important;animation:note-unfold .35s both}
+@keyframes seed-rise{from{opacity:0;scale:.35;translate:0 30px}to{opacity:1;scale:1;translate:0 0}}
+@keyframes garden-bloom-in{from{opacity:0;scale:.2;translate:0 50px}70%{opacity:1;scale:1.12}to{opacity:1;scale:1;translate:0 0}}
+@keyframes garden-sway{50%{rotate:3deg}}
+@keyframes garden-drop{0%{opacity:0;translate:0 -8px}12%{opacity:.75}75%{opacity:.75}100%{opacity:0;translate:-12px 235px}}
+@media(max-width:750px){.garden-scene{height:250px}.garden-plot{height:155px}.garden-grown-flower{width:76px;height:125px}.garden-seed-option{flex-direction:column;gap:0;padding:.2rem}.garden-seed-option img{height:32px;width:33px}.garden-seed-option span{font-size:.68rem}.garden-water{width:100%;justify-content:center}.garden-actions .text-link{margin:auto}.garden-note{min-height:0}}
+@media(max-width:440px){.garden{padding:1.2rem}.garden-heading h3{font-size:2rem}.garden-count{min-width:61px;font-size:1.1rem}.garden-scene{height:235px}.garden-plots{left:4px;right:4px}.garden-grown-flower{width:67px;height:112px}.garden-plant-here{width:35px;height:35px;font-size:1.5rem}.garden-plot-soil{left:12%;right:12%}}
+@media(prefers-reduced-motion:reduce){.garden-sun,.garden-cloud,.garden-plant-here,.garden-sprout,.garden-grown-flower,.garden-rain span,.garden-note{animation:none!important}}
