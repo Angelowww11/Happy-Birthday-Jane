@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { content, type Photo as PhotoType } from './content/content';
 import { Buddy, Flower } from './components/Flower';
@@ -11,12 +12,25 @@ const DateChapter = lazy(() => import('./DateChapter'));
 const chapters = [
   ['birthday', 'Birthday'], ['you', 'Jane'], ['us', 'Us'],
   ['letters', 'Letters'], ['hope', 'For hard days'],
-  ['arcade', 'Play'], ['date', 'Oct 19'],
+  ['arcade', 'Play'], ['date', 'Oct 18'],
 ];
 const today = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit',
 }).format(new Date());
 const age = Number(today.slice(0, 4)) - 2007 - (today.slice(5) < '10-12' ? 1 : 0);
+type InstallPromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }> };
+let deferredInstall: InstallPromptEvent | null = null;
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    deferredInstall = event as InstallPromptEvent;
+    window.dispatchEvent(new Event('jane-install-ready'));
+  });
+  window.addEventListener('appinstalled', () => {
+    deferredInstall = null;
+    window.dispatchEvent(new Event('jane-install-ready'));
+  });
+}
 
 function celebrate() {
   confetti({ particleCount: 150, spread: 90, origin: { y: .62 }, colors: ['#f34b96', '#ffd866', '#fff9f2', '#9e6ed9'] });
@@ -35,6 +49,38 @@ function celebrateFirstView(delay = 0) {
 
 function Sticker({ className = '', label = '', src = content.nailongAsset }: { className?: string; label?: string; src?: string }) {
   return <span className={`nailong-sticker ${className}`} aria-hidden="true"><img src={src} alt="" />{label && <small>{label}</small>}</span>;
+}
+
+function InstallButton() {
+  const [ready, setReady] = useState(Boolean(deferredInstall));
+  const [installed, setInstalled] = useState(() => window.matchMedia('(display-mode: standalone)').matches || Boolean((navigator as Navigator & { standalone?: boolean }).standalone));
+  const [help, setHelp] = useState(false);
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  useEffect(() => {
+    const sync = () => { setReady(Boolean(deferredInstall)); setInstalled(window.matchMedia('(display-mode: standalone)').matches || Boolean((navigator as Navigator & { standalone?: boolean }).standalone)); };
+    window.addEventListener('jane-install-ready', sync);
+    return () => window.removeEventListener('jane-install-ready', sync);
+  }, []);
+  if (installed) return null;
+  const install = async () => {
+    if (!deferredInstall) { setHelp(true); return; }
+    const prompt = deferredInstall;
+    deferredInstall = null;
+    setReady(false);
+    await prompt.prompt();
+    await prompt.userChoice;
+  };
+  return <>
+    <button className="soft-button install-button" onClick={install}>{ready ? 'Install on your phone' : 'Add to your phone'} <span aria-hidden="true">↓</span></button>
+    {createPortal(<AnimatePresence>{help && <motion.div className="install-help-backdrop" role="presentation" onClick={() => setHelp(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <motion.div className="install-help" role="dialog" aria-modal="true" aria-label="Install birthday book" onClick={event => event.stopPropagation()} initial={{ y: 25, scale: .94 }} animate={{ y: 0, scale: 1 }} exit={{ y: 25, scale: .94 }}>
+        <button className="modal-close" onClick={() => setHelp(false)} aria-label="Close install instructions">×</button>
+        <img src="/app-icon-192.png" alt="" /><span className="kicker">Keep this little world</span><h3>Add it to your phone ♡</h3>
+        <p>{isIOS ? 'Open this page in Safari. Tap Share, then Add to Home Screen.' : 'Open your browser menu and choose Install app or Add to Home screen.'}</p>
+        <small>It will open from your home screen like an app. The birthday book and photos are saved for offline viewing after this visit.</small>
+      </motion.div>
+    </motion.div>}</AnimatePresence>, document.body)}
+  </>;
 }
 
 function Intro() {
@@ -128,14 +174,14 @@ function Hero() {
         <p className="hero-age"><strong>{age}</strong><span>years of being you<br/>and that is everything.</span></p>
         <p className="lead">{content.hero.note}</p>
         <BirthdayCountdown />
-        <div className="hero-actions"><button className="primary" onClick={celebrate}>Make it rain confetti ✦</button><a className="soft-button" href="#you">See what I made ↓</a><button className="book-again" onClick={() => { showerPlayed = false; window.scrollTo({ top: 0, behavior: 'instant' }); reopen(); }}>Open the book again ↺</button></div>
+        <div className="hero-actions"><button className="primary" onClick={celebrate}>Make it rain confetti ✦</button><a className="soft-button" href="#you">See what I made ↓</a><InstallButton /><button className="book-again" onClick={() => { showerPlayed = false; window.scrollTo({ top: 0, behavior: 'instant' }); reopen(); }}>Open the book again ↺</button></div>
         <p className="hero-sign">always rooting for you,<br/><b>Angelo ♡</b></p>
       </motion.div>
       <motion.div className="hero-collage" aria-label="Photos of Jane" initial={{ opacity: 0, x: 45, rotate: 4 }} whileInView={{ opacity: 1, x: 0, rotate: 0 }} viewport={{ once: true }} transition={{ duration: .85, delay: .15 }}>
         <div className="hero-sunburst" aria-hidden="true" />
         {pics.slice(0, 3).map((p, i) => <div className={`hero-photo hero-photo-${i}`} key={p.src}>
           <img src={p.src} alt={p.alt} loading={i === 0 ? 'eager' : 'lazy'} style={{ objectPosition: p.position || 'center' }} />
-          <span>{i === 0 ? 'birthday girl ♡' : i === 1 ? 'so proud of you' : 'just Jane things'}</span>
+          <span>{i === 0 ? 'birthday girl ♡' : i === 1 ? 'so proud of you' : 'my silly little girl'}</span>
         </div>)}
         <Sticker className="hero-sticker" src="/assets/nailong/magnolia-sticker.webp" label="hbd jane!" />
         <span className="hero-sparkle hero-sparkle-one">✦</span><span className="hero-sparkle hero-sparkle-two">✿</span>
@@ -152,7 +198,7 @@ function Hero() {
 function Gallery({ onPhoto }: { onPhoto: (p: PhotoType) => void }) {
   return <section className="chapter gallery-chapter" id="you">
     <img className="section-flower gallery-flower" src="/assets/flowers/magnolia.webp" alt="" aria-hidden="true" />
-    <motion.div className="gallery-top" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .4 }} transition={{ duration: .65 }}><div><div className="chapter-label">The Jane gallery ♡</div><span className="kicker">A very biased gallery</span><h2>Look at <em>you.</em></h2><p>Not just the photos. The person in them. The one who cares so much, keeps going, and makes my days better.</p></div><span className="gallery-count">8 little reminders<br/>of one big love ♡</span></motion.div>
+    <motion.div className="gallery-top" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .4 }} transition={{ duration: .65 }}><div><div className="chapter-label">The Jane gallery ♡</div><span className="kicker">A very biased gallery</span><h2>Look at <em>you.</em></h2><p>I have seen these photos so many times, and I still stop at your smile. I wanted to keep a few of my favorites here for you.</p></div><span className="gallery-count">8 little reminders<br/>of one big love ♡</span></motion.div>
     <div className="gallery-strip">{content.herPhotos.map((p, i) => <Photo photo={p} key={p.src} onClick={() => onPhoto(p)} className={`gallery-photo tilt-${i % 4}`} />)}</div>
     <Sticker className="gallery-nailong" label="she's the best" src="/assets/nailong/flower-sticker.webp" />
     <img className="gallery-garland" src="/assets/flowers/birthday-garland.webp" alt="" aria-hidden="true" />

@@ -1,6 +1,6 @@
 # Happy Birthday, Jane
 
-A chapter-based birthday gift for Jane, made by Angelo. Built with Vite, React, TypeScript, Tailwind CSS, Framer Motion, and six small games. The original photos are intentionally excluded from Git; the selected, optimized WebP images are in `public/photos/`.
+A chapter-based birthday gift for Jane, made by Angelo. Built with Vite, React, TypeScript, Framer Motion, and seven small games. The original photos are intentionally excluded from Git; the selected, optimized WebP images are in `public/photos/`.
 
 ## Run it
 
@@ -12,9 +12,11 @@ npm run build
 
 Deploy the repository to Vercel with framework preset **Vite**, build command `npm run build`, and output directory `dist`.
 
+The production build creates `dist/sw.js`, which caches the birthday book, photos, game code, and artwork for offline use. The manifest and phone icons are in `public/`. On supported Android browsers, use **Install on your phone** on the birthday page. On iPhone, open the site in Safari, tap **Share**, then **Add to Home Screen**.
+
 ## Edit the personal details
 
-All personal text, photo captions and paths, quiz answers, the October 19 date, and letters live in `src/content/content.ts`.
+All personal text, photo captions and paths, the October 18 date, and letters live in `src/content/content.ts`.
 
 The photos used by the site are organized as `public/photos/her/` and `public/photos/us/`. Each full image has a `-tiny.webp` preview for blur-up loading. To replace or add photos:
 
@@ -29,6 +31,6 @@ The site asks crawlers not to index it, but the Vercel URL is public. Avoid putt
 ## Before sending the link
 
 - Review every photo and caption for what Jane would be comfortable seeing publicly.
-- Check the October 19 countdown date before sharing.
+- Check the October 18 countdown date before sharing.
 - Play through the letters, games, and date card once on a phone.
 - Share the final Vercel URL with Jane.

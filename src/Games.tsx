@@ -90,7 +90,7 @@ function MemoryMatch() {
 
 function DragonHop() {
   const unlock = useGift(s => s.unlock);
-  const [running, setRunning] = useState(false), [score, setScore] = useState(0), [misses, setMisses] = useState(0), [jump, setJump] = useState(false), [feedback, setFeedback] = useState('Tap just as a cloud reaches the glowing ring!');
+  const [running, setRunning] = useState(false), [score, setScore] = useState(0), [misses, setMisses] = useState(0), [jump, setJump] = useState(false), [feedback, setFeedback] = useState('Tap as a cloud gets close to Nailong!');
   const [clouds, setClouds] = useState<{ id: number; x: number }[]>([]), nextId = useRef(0), counted = useRef(new Set<number>());
   const cloudsRef = useRef<typeof clouds>([]), jumpRef = useRef(false), jumpTimer = useRef<number | undefined>(undefined);
   const won = score >= 6, ended = misses >= 6 && !won;
@@ -99,8 +99,8 @@ function DragonHop() {
     const timer = window.setInterval(() => {
       const moved = cloudsRef.current.map(c => ({ ...c, x: c.x - (1.65 + score * .09) }));
       for (const cloud of moved) if (!counted.current.has(cloud.id)) {
-        if (cloud.x <= 25 && cloud.x >= 10 && jumpRef.current) { counted.current.add(cloud.id); setScore(n => n + 1); setFeedback('Lovely hop! ✦'); }
-        else if (cloud.x < 10) { counted.current.add(cloud.id); setMisses(n => n + 1); setFeedback('Almost! Wait for the glowing ring ♡'); }
+        if (cloud.x <= 31 && cloud.x >= 7 && jumpRef.current) { counted.current.add(cloud.id); setScore(n => n + 1); setFeedback('Nice one, Nailong! ✦'); }
+        else if (cloud.x < 7) { counted.current.add(cloud.id); setMisses(n => n + 1); setFeedback('Almost! Jump as the cloud comes close ♡'); }
       }
       const left = moved.filter(c => c.x >= -10);
       if (!left.length || left[left.length - 1].x < 42) left.push({ id: nextId.current++, x: 105 });
@@ -110,12 +110,12 @@ function DragonHop() {
     return () => window.clearInterval(timer);
   }, [running, won, ended, score]);
   useEffect(() => { if (won) { unlock('hop'); setRunning(false); } }, [won, unlock]);
-  const jumpNow = () => { if (!running) return; window.clearTimeout(jumpTimer.current); jumpRef.current = true; setJump(true); jumpTimer.current = window.setTimeout(() => { jumpRef.current = false; setJump(false); }, 820); };
-  const restart = () => { window.clearTimeout(jumpTimer.current); cloudsRef.current = []; jumpRef.current = false; setScore(0); setMisses(0); setClouds([]); counted.current.clear(); setJump(false); setFeedback('Tap just as a cloud reaches the glowing ring!'); setRunning(true); };
+  const jumpNow = () => { if (!running) return; window.clearTimeout(jumpTimer.current); jumpRef.current = true; setJump(true); jumpTimer.current = window.setTimeout(() => { jumpRef.current = false; setJump(false); }, 1350); };
+  const restart = () => { window.clearTimeout(jumpTimer.current); cloudsRef.current = []; jumpRef.current = false; setScore(0); setMisses(0); setClouds([]); counted.current.clear(); setJump(false); setFeedback('Tap as a cloud gets close to Nailong!'); setRunning(true); };
   return <div className="game-body"><div className="game-instructions"><h3>Nailong hop</h3><p>Help our little yellow friend hop over six clouds. Tap the stage, hit Space, or press Hop when a cloud gets close.</p></div>
     <div className="game-scorebar"><span>♡ {score} / 6 hops</span><span>{Math.max(0, 6 - misses)} chances left</span></div>
     <div className="hop-field" tabIndex={0} onPointerDown={jumpNow} onKeyDown={e => { if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); jumpNow(); } }} aria-label="Nailong hop. Tap or press Space to jump over clouds.">
-      <span className="hop-sun">✦</span><span className="hop-sky-cloud cloud-a">☁</span><span className="hop-sky-cloud cloud-b">☁</span><span className="hop-hills"/><span className="hop-target"><span>HOP<br/>HERE</span></span><img className={`hop-buddy ${jump ? 'jump' : ''}`} src={content.nailongAsset} alt="" />
+      <span className="hop-sun">✦</span><span className="hop-sky-cloud cloud-a">☁</span><span className="hop-sky-cloud cloud-b">☁</span><span className="hop-hills"/><span className="hop-target"><span>HOP<br/>HERE</span></span><span className={`hop-shadow ${jump ? 'jump' : ''}`} /><img className={`hop-buddy ${jump ? 'jump' : ''}`} src={content.nailongAsset} alt="" />
       {clouds.map(c => <span key={c.id} className="hop-cloud" style={{ left: `${c.x}%` }}>☁</span>)}<span className="hop-ground" /><span className="hop-flowers">✿ · ✿ · ✿ · ✿</span>
     </div>
     <p className="hop-feedback" role="status" key={feedback}>{feedback}</p>
@@ -203,11 +203,11 @@ function BouquetBuilder() {
   </div>;
 }
 
-const hiddenWords = ['JANE', 'LOVE', 'HOME', 'ALWAYS', 'SMILE'];
+const hiddenWords = ['JANE', 'LOVE', 'HOME', 'ALWAYS', 'BABY'];
 type WordBoard = { cells: string[]; paths: Record<string, number[]> };
 function makeWordBoard(): WordBoard {
   const size = 8, cells = Array<string>(size * size).fill(''), paths: Record<string, number[]> = {};
-  for (const word of ['ALWAYS', 'SMILE', 'LOVE', 'HOME', 'JANE']) {
+  for (const word of ['ALWAYS', 'BABY', 'LOVE', 'HOME', 'JANE']) {
     let placed = false;
     for (let attempt = 0; attempt < 500 && !placed; attempt++) {
       const x = Math.floor(Math.random() * size), y = Math.floor(Math.random() * size);
@@ -244,7 +244,7 @@ function WordHunt() {
     <div className="word-targets">{hiddenWords.map(word => <span key={word} className={found.includes(word) ? 'found' : ''}>{found.includes(word) ? '✿ ' : '♡ '}{word}</span>)}</div>
     <div className="word-board" role="group" aria-label="Love word hunt letter grid">{board.cells.map((letter, i) => <button key={i} className={`${picked.includes(i) ? 'picked' : ''} ${found.some(w => board.paths[w].includes(i)) ? 'found' : ''}`} onClick={() => pick(i)} aria-label={`Row ${Math.floor(i / 8) + 1}, column ${i % 8 + 1}, ${letter}`}>{letter}</button>)}</div>
     <p className="word-message" role="status">{message}</p>
-    {won ? <Win id="words" onReplay={restart} message="Jane, love, home, always, smile. Five tiny words, and you are my favorite part of them all." /> : <div className="game-actions"><button className="text-link" onClick={restart}>Start the hunt again ↗</button></div>}
+    {won ? <Win id="words" onReplay={restart} message="Five little words I keep coming back to. You are my favorite person to say them to, baby." /> : <div className="game-actions"><button className="text-link" onClick={restart}>Start the hunt again ↗</button></div>}
   </div>;
 }
 

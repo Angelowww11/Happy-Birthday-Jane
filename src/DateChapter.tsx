@@ -28,8 +28,8 @@ export default function DateChapter() {
           <img className="date-flower" src="/assets/flowers/floral-corner.webp" alt="" aria-hidden="true" loading="lazy" />
           <div className="date-ticket-copy">
             <span className="date-ticket-top">♡ Please keep this day for us ♡</span>
-            <div className="date-ticket-numeral">19<span>OCT</span></div>
-            <p className="date-ticket-year">MONDAY · 2026</p>
+            <div className="date-ticket-numeral">18<span>OCT</span></div>
+            <p className="date-ticket-year">SUNDAY · 2026</p>
             <h2>Our next<br/><em>little adventure.</em></h2>
             <p>{content.date.intro}</p>
             <span className="date-ticket-stamp">SAVE THE DATE ✿ SAVE THE DATE ✿</span>
@@ -40,7 +40,7 @@ export default function DateChapter() {
           </div>
           <img className="date-nailong" src="/assets/nailong/flower-sticker.webp" alt="" />
         </div>
-        <div className="countdown-panel" aria-label="Countdown to October 19, 2026">
+        <div className="countdown-panel" aria-label="Countdown to October 18, 2026">
           <div><span className="kicker">The countdown</span><h3>{left ? 'Until I see you again' : isTheDay ? 'Today is our day ♡' : 'Another day for our story ♡'}</h3></div>
           {left > 0 && <div className="countdown-digits">{values.map(([label, value]) => <div key={label}><strong>{String(value).padStart(2, '0')}</strong><span>{label}</span></div>)}</div>}
         </div>

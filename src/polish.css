@@ -88,3 +88,28 @@ body,.chapter,.chapter-nav,.hero-board,.hope-card,.arcade-stage,.arcade-sidebar,
 @keyframes book-settle{from{filter:drop-shadow(0 55px 34px #8d547130)}to{filter:drop-shadow(0 15px 20px #8d54713b)}}
 @media(max-width:750px){.intro-sweep{width:440px;left:-160px;top:-95px;opacity:.44}.hero-sweep{width:330px;right:-90px;bottom:-55px;opacity:.72}.gallery-sweep,.us-sweep,.letters-sweep,.hope-sweep,.arcade-sweep,.date-sweep{width:330px;opacity:.48}.gallery-sweep,.letters-sweep,.arcade-sweep{left:-115px}.us-sweep,.hope-sweep,.date-sweep{right:-115px}.book-again{width:auto!important}.floating-petals span{width:9px;height:15px}}
 @media(prefers-reduced-motion:reduce){.floral-sweep,.floating-petals span,.diary-spread{animation:none!important}.floating-petals{display:none}}
+
+/* Keep the garden and its handwritten note inside the phone viewport. */
+.hope-grid,.hope-card{min-width:0}
+.garden{overflow:hidden}
+.garden-bed{width:100%;min-width:0;max-width:100%;overflow:hidden}
+.garden-bed .flower-art{flex:0 0 62px;min-width:0;width:62px;height:88px;object-fit:contain}
+.garden-affirmation{max-width:100%;overflow-wrap:break-word;font:700 1rem/1.5 Nunito,sans-serif!important;letter-spacing:0;color:var(--ink)!important}
+.when-message{overflow-wrap:break-word}
+.hop-field{--hop-height:145px}
+.hop-shadow{position:absolute;z-index:2;left:10%;bottom:21px;width:115px;height:17px;border-radius:50%;background:#476e7560;filter:blur(5px);transition:transform .25s,opacity .25s}
+.hop-shadow.jump{transform:scale(.46);opacity:.25}
+.hop-buddy.jump{animation:hop-float 1.35s cubic-bezier(.25,.05,.4,1) both}
+@keyframes hop-float{0%{transform:translateY(0) scale(1.03,.94) rotate(0)}15%{transform:translateY(calc(var(--hop-height)*-.82)) scale(.95,1.07) rotate(-6deg)}29%,64%{transform:translateY(calc(var(--hop-height)*-1)) scale(1) rotate(4deg)}80%{transform:translateY(calc(var(--hop-height)*-.65)) scale(1.02,.98) rotate(8deg)}100%{transform:translateY(0) scale(1.06,.91) rotate(0)}}
+@media(max-width:750px){.hope-grid{grid-template-columns:minmax(0,1fr)}.hope-card{width:100%;max-width:100%;overflow:hidden}.garden-bed .flower-art{flex-basis:49px;width:49px;height:76px}.hop-field{--hop-height:118px}.hop-shadow{left:9%;width:93px}.garden-affirmation{font-size:.96rem!important;line-height:1.55!important}}
+@media(max-width:440px){.hop-buddy{left:5%;width:112px;height:142px;bottom:23px}.hop-shadow{left:5%;width:112px}.hop-field{--hop-height:123px}.when-message{font-size:1.4rem;line-height:1.35}}
+@media(prefers-reduced-motion:reduce){.hop-buddy.jump{animation:none!important;transform:translateY(calc(var(--hop-height)*-1))}.hop-shadow{transition:none}}
+
+.install-button{background:linear-gradient(120deg,var(--accent-wash),var(--gallery-wash));border:1px solid var(--pink);color:var(--ink);font-weight:900}
+.install-button span{font-size:1.15em;margin-left:.2rem}
+.install-help-backdrop{position:fixed;z-index:100;inset:0;display:grid;place-items:center;padding:1rem;background:#352132c9;backdrop-filter:blur(7px)}
+.install-help{position:relative;width:min(410px,100%);padding:2rem;border:3px solid #fff;border-radius:26px;background:linear-gradient(145deg,#fffefa,#fff0f4);box-shadow:0 25px 55px #2b1a3270;text-align:center}
+.install-help img{display:block;width:88px;height:88px;margin:0 auto 1rem;border-radius:22px;box-shadow:0 8px 17px #b65b7a40}
+.install-help h3{margin:.25rem 0 .7rem;color:var(--ink);font:700 2rem/1.05 Fredoka,sans-serif}
+.install-help p{margin:0 0 1rem;font:700 1rem/1.5 Nunito,sans-serif;color:var(--ink)}
+.install-help small{display:block;color:var(--muted);font:700 .77rem/1.45 Nunito,sans-serif}
