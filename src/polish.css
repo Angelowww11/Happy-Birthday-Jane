@@ -58,3 +58,33 @@ body,.chapter,.chapter-nav,.hero-board,.hope-card,.arcade-stage,.arcade-sidebar,
 @media(max-width:600px){.memory-grid{grid-template-columns:repeat(2,1fr);gap:.8rem}.memory-card-back span{font-size:4rem}.memory-card-back small{font-size:.65rem}.memory-card-front small{font-size:1rem}.memory-card-front img{height:calc(100% - 25px)}.buddy-anchor{right:.3rem;bottom:.3rem}.buddy{width:51px;height:56px}.buddy small{display:none}}
 @media(max-width:440px){.diary-envelope{height:170px;width:260px}.diary-letter-page{min-height:520px}.diary-photo-page{min-height:390px}.diary-photo-hint{font-size:1.25rem}.intro-garland{width:300px;bottom:-115px;right:-100px}.birthday-countdown-icon{width:36px;height:36px}.birthday-countdown-label strong{font-size:.95rem}.hop-target{left:19%}.hop-buddy{width:78px;left:9%}.bouquet-bloom{width:105px;height:105px}.bouquet-bloom-0{left:20%}.bouquet-bloom-1{left:50%}.bouquet-bloom-2{left:35%}.bouquet-bloom-3{left:13%}.bouquet-bloom-4{left:59%}}
 @media(prefers-reduced-motion:reduce){.intro-garland,.hero-garland,.gallery-garland,.hero-sparkle,.birthday-countdown-icon,.diary-envelope,.diary-envelope-seal,.hop-sun,.hop-sky-cloud,.hop-target,.hop-buddy.jump,.arcade-stage,.game-win,.memory-caption,.when-message,.lightbox img{animation:none!important}.memory-card-inner{transition:none}}
+
+/* A flower-filled page edge, like extra cutouts tucked into the birthday book. */
+.floral-sweep{position:absolute;z-index:0;pointer-events:none;object-fit:contain;filter:drop-shadow(0 13px 14px #9c6d7040);animation:sweep-breathe 9s ease-in-out infinite;transform-origin:55% 60%}
+.intro-sweep{width:min(55vw,740px);left:-12%;top:-20%;opacity:.78;rotate:18deg;animation-delay:-3s}
+.hero-sweep{width:clamp(300px,35vw,590px);right:-5%;bottom:-9%;opacity:.9;rotate:-13deg}
+.gallery-sweep{width:clamp(300px,42vw,680px);left:-13%;bottom:-10%;opacity:.67;rotate:12deg;animation-delay:-2s}
+.us-sweep{width:clamp(330px,42vw,650px);right:-14%;bottom:-7%;opacity:.68;rotate:-12deg;animation-delay:-4s}
+.letters-sweep{width:clamp(300px,37vw,590px);left:-12%;bottom:-13%;opacity:.65;rotate:15deg;animation-delay:-5s}
+.hope-sweep{width:clamp(320px,41vw,620px);right:-11%;bottom:-10%;opacity:.62;rotate:-14deg;animation-delay:-1s}
+.arcade-sweep{width:clamp(310px,39vw,620px);left:-13%;bottom:-9%;opacity:.6;rotate:14deg;animation-delay:-4s}
+.date-sweep{width:clamp(320px,41vw,640px);right:-13%;bottom:-9%;opacity:.74;rotate:-11deg;animation-delay:-2s}
+.diary-cover{transform-style:preserve-3d;cursor:pointer}
+.diary-cover-wrap{filter:drop-shadow(0 35px 33px #8d547142)}
+.diary-cover-wrap .diary-hint{color:var(--ink);font-weight:900;letter-spacing:.02em;text-shadow:0 2px 0 #fff9}
+.diary-cover-clasp{box-shadow:0 7px 0 #a83c64,0 12px 24px #70415855,0 0 0 12px #fff5}
+.diary-spread{animation:book-settle .7s ease-out both}
+.book-again{align-self:center;border:0;border-bottom:2px solid var(--pink-deep);border-radius:0;padding:.45rem .15rem;background:transparent;color:var(--pink-deep);font:900 .78rem Nunito,sans-serif;cursor:pointer;transition:transform .25s,color .25s}
+.book-again:hover{transform:translateY(-3px) rotate(-2deg);color:var(--ink)}
+.primary,.soft-button,.arcade-tab,.when-grid button,.photo,.letter-card{position:relative}
+.primary:active,.soft-button:active,.arcade-tab:active,.when-grid button:active,.photo:active,.letter-card:active{scale:.96;filter:brightness(1.06)}
+.primary:focus-visible,.soft-button:focus-visible,.book-again:focus-visible,.diary-cover:focus-visible,.diary-envelope:focus-visible{outline:3px solid var(--pink-deep);outline-offset:5px}
+.floating-petals{position:fixed;z-index:3;inset:0;pointer-events:none;overflow:hidden}
+.floating-petals span{position:absolute;top:-10%;width:13px;height:21px;border-radius:88% 15% 84% 22%;background:linear-gradient(145deg,#fff8f0 5%,#f9a3bc 70%,#e9749f);box-shadow:inset 2px 1px 3px #fff9,0 2px 4px #b8647940;opacity:0;animation:petal-fall 20s linear infinite}
+.floating-petals span:nth-child(3n){background:linear-gradient(145deg,#fffdf4,#ffe39e 80%);width:11px;height:17px}
+.floating-petals span:nth-child(4n){width:8px;height:12px;opacity:.55}
+@keyframes sweep-breathe{50%{translate:0 -11px;scale:1.025}}
+@keyframes petal-fall{0%{translate:0 -30px;rotate:0deg;opacity:0}8%{opacity:.65}50%{translate:42px 53vh;rotate:230deg;opacity:.55}90%{opacity:.48}100%{translate:-45px 112vh;rotate:480deg;opacity:0}}
+@keyframes book-settle{from{filter:drop-shadow(0 55px 34px #8d547130)}to{filter:drop-shadow(0 15px 20px #8d54713b)}}
+@media(max-width:750px){.intro-sweep{width:440px;left:-160px;top:-95px;opacity:.44}.hero-sweep{width:330px;right:-90px;bottom:-55px;opacity:.72}.gallery-sweep,.us-sweep,.letters-sweep,.hope-sweep,.arcade-sweep,.date-sweep{width:330px;opacity:.48}.gallery-sweep,.letters-sweep,.arcade-sweep{left:-115px}.us-sweep,.hope-sweep,.date-sweep{right:-115px}.book-again{width:auto!important}.floating-petals span{width:9px;height:15px}}
+@media(prefers-reduced-motion:reduce){.floral-sweep,.floating-petals span,.diary-spread{animation:none!important}.floating-petals{display:none}}

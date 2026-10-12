@@ -186,8 +186,8 @@ function ScratchCard() {
 }
 
 const bouquetFlowers = [
-  { name: 'Peony', src: '/assets/flowers/peony.webp', note: 'for the lovely, layered parts of you' },
-  { name: 'Magnolia', src: '/assets/flowers/magnolia.webp', note: 'for the gentleness you carry' },
+  { name: 'Blush bloom', src: '/assets/flowers/peony.webp', note: 'for the way you make me smile' },
+  { name: 'Ivory bloom', src: '/assets/flowers/magnolia.webp', note: 'for the gentleness you share' },
   { name: 'Sunshine', src: '/assets/nailong/flower-sticker.webp', note: 'for the laughs we share' },
 ] as const;
 function BouquetBuilder() {
@@ -195,19 +195,19 @@ function BouquetBuilder() {
   const [flowers, setFlowers] = useState<number[]>([]), [wrapped, setWrapped] = useState(false);
   const canWrap = flowers.length === 5 && flowers.includes(0) && flowers.includes(1);
   const restart = () => { setFlowers([]); setWrapped(false); };
-  return <div className="game-body bouquet-game"><div className="game-instructions"><h3>Make a bouquet</h3><p>Choose five little things for a bouquet made just for us. Include a peony and a magnolia, then tie it with love.</p></div>
-    <div className="game-scorebar"><span>✿ {flowers.length} / 5 blooms</span><span>{canWrap ? 'Ready to wrap ♡' : 'Peony + magnolia, please'}</span></div>
+  return <div className="game-body bouquet-game"><div className="game-instructions"><h3>Make a bouquet</h3><p>Pick five blooms for us. Choose at least one pink and one ivory, then tie them together.</p></div>
+    <div className="game-scorebar"><span>✿ {flowers.length} / 5 blooms</span><span>{canWrap ? 'Ready to wrap ♡' : 'Pink + ivory, please'}</span></div>
     <div className={`bouquet-vase ${wrapped ? 'wrapped' : ''}`} aria-label={`${flowers.length} flowers in bouquet`}><span className="bouquet-glow"/><span className="bouquet-ribbon">♡</span>{flowers.map((flower, i) => <img key={i} className={`bouquet-bloom bouquet-bloom-${i}`} src={bouquetFlowers[flower].src} alt={bouquetFlowers[flower].name} />)}<span className="bouquet-paper"/><span className="bouquet-ground"/><small>{flowers.length ? 'a bouquet made by Jane ♡' : 'your bouquet starts here ✿'}</small></div>
     <div className="bouquet-choices">{bouquetFlowers.map((flower, i) => <button key={flower.name} onClick={() => setFlowers(old => old.length < 5 && !wrapped ? [...old, i] : old)} disabled={flowers.length >= 5 || wrapped}><img src={flower.src} alt=""/><span><strong>{flower.name}</strong><small>{flower.note}</small></span><b>+</b></button>)}</div>
-    {wrapped ? <Win id="bouquet" onReplay={restart} message="Peonies for your beauty, magnolias for your softness, and a little sunshine for every day I get with you." /> : <div className="game-actions"><button className="primary" disabled={!canWrap} onClick={() => { setWrapped(true); unlock('bouquet'); }}>Tie the ribbon ♡</button><button className="text-link" disabled={!flowers.length} onClick={() => setFlowers(old => old.slice(0, -1))}>Undo last flower</button></div>}
+    {wrapped ? <Win id="bouquet" onReplay={restart} message="A little bouquet for the person who makes my days brighter. I love you, baby." /> : <div className="game-actions"><button className="primary" disabled={!canWrap} onClick={() => { setWrapped(true); unlock('bouquet'); }}>Tie the ribbon ♡</button><button className="text-link" disabled={!flowers.length} onClick={() => setFlowers(old => old.slice(0, -1))}>Undo last flower</button></div>}
   </div>;
 }
 
-const hiddenWords = ['JANE', 'LOVE', 'HOME', 'ALWAYS', 'PEONY'];
+const hiddenWords = ['JANE', 'LOVE', 'HOME', 'ALWAYS', 'SMILE'];
 type WordBoard = { cells: string[]; paths: Record<string, number[]> };
 function makeWordBoard(): WordBoard {
   const size = 8, cells = Array<string>(size * size).fill(''), paths: Record<string, number[]> = {};
-  for (const word of ['ALWAYS', 'PEONY', 'LOVE', 'HOME', 'JANE']) {
+  for (const word of ['ALWAYS', 'SMILE', 'LOVE', 'HOME', 'JANE']) {
     let placed = false;
     for (let attempt = 0; attempt < 500 && !placed; attempt++) {
       const x = Math.floor(Math.random() * size), y = Math.floor(Math.random() * size);
@@ -244,7 +244,7 @@ function WordHunt() {
     <div className="word-targets">{hiddenWords.map(word => <span key={word} className={found.includes(word) ? 'found' : ''}>{found.includes(word) ? '✿ ' : '♡ '}{word}</span>)}</div>
     <div className="word-board" role="group" aria-label="Love word hunt letter grid">{board.cells.map((letter, i) => <button key={i} className={`${picked.includes(i) ? 'picked' : ''} ${found.some(w => board.paths[w].includes(i)) ? 'found' : ''}`} onClick={() => pick(i)} aria-label={`Row ${Math.floor(i / 8) + 1}, column ${i % 8 + 1}, ${letter}`}>{letter}</button>)}</div>
     <p className="word-message" role="status">{message}</p>
-    {won ? <Win id="words" onReplay={restart} message="Jane, love, home, always, peony. Five tiny words, and you are my favorite one." /> : <div className="game-actions"><button className="text-link" onClick={restart}>Start the hunt again ↗</button></div>}
+    {won ? <Win id="words" onReplay={restart} message="Jane, love, home, always, smile. Five tiny words, and you are my favorite part of them all." /> : <div className="game-actions"><button className="text-link" onClick={restart}>Start the hunt again ↗</button></div>}
   </div>;
 }
 
@@ -252,7 +252,7 @@ export default function Games() {
   const [active, setActive] = useState<GameId>('memory');
   const stickers = useGift(s => s.stickers);
   const games: Record<GameId, ReactNode> = { petals: <PetalCatch />, memory: <MemoryMatch />, hop: <DragonHop />, puzzle: <PhotoPuzzle />, scratch: <ScratchCard />, bouquet: <BouquetBuilder />, words: <WordHunt /> };
-  return <section className="chapter arcade-chapter" id="arcade"><img className="section-flower arcade-flower" src="/assets/flowers/peony.webp" alt="" aria-hidden="true" /><div className="chapter-label">Come play with me ♡</div><div className="arcade-heading"><div><span className="kicker">A little silly, a little us</span><h2>Let's <em>play.</em></h2><p>Pick a game. Every little win adds a sticker to our collection.</p></div><img src="/assets/nailong/flower-sticker.webp" alt="" /></div>
+  return <section className="chapter arcade-chapter" id="arcade"><img className="section-flower arcade-flower" src="/assets/flowers/peony.webp" alt="" aria-hidden="true" /><img className="floral-sweep arcade-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" /><div className="chapter-label">Come play with me ♡</div><div className="arcade-heading"><div><span className="kicker">A little silly, a little us</span><h2>Let's <em>play.</em></h2><p>Pick a game. Every little win adds a sticker to our collection.</p></div><img src="/assets/nailong/flower-sticker.webp" alt="" /></div>
     <div className="arcade-layout"><div className="arcade-sidebar"><div className="arcade-menu-label">CHOOSE A GAME ↓</div>{gameInfo.map(game => <button className={`arcade-tab ${active === game.id ? 'active' : ''}`} key={game.id} onClick={() => setActive(game.id)} aria-pressed={active === game.id}><span className="arcade-tab-icon">{game.icon}</span><span><strong>{game.name}</strong><small>{game.blurb}</small></span><b>{stickers.includes(game.id) ? '✓' : '↗'}</b></button>)}<div className="collection"><div><span className="kicker">Our sticker book</span><strong>{stickers.filter(id => gameInfo.some(game => game.id === id)).length} / 7</strong></div><div className="sticker-row">{gameInfo.map(game => <span key={game.id} className={stickers.includes(game.id) ? 'found' : ''}>{stickers.includes(game.id) ? game.icon : '♡'}</span>)}</div></div></div>
       <div className="arcade-stage" key={active}>{games[active]}</div>
     </div>

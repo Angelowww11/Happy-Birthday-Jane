@@ -26,8 +26,10 @@ function birthdayShower() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   [0, 230, 470].forEach((delay, i) => window.setTimeout(() => confetti({ particleCount: 95, spread: 72, angle: i % 2 ? 135 : 45, startVelocity: 48, gravity: .75, origin: { x: i % 2 ? .96 : .04, y: .32 }, colors: ['#f0649b', '#ffd35e', '#fffdf7', '#ffb5d0'] }), delay));
 }
+let showerPlayed = false;
 function celebrateFirstView(delay = 0) {
-  try { if (sessionStorage.getItem('jane-birthday-shower-v2')) return; sessionStorage.setItem('jane-birthday-shower-v2', 'yes'); } catch { /* private browsing */ }
+  if (showerPlayed) return;
+  showerPlayed = true;
   window.setTimeout(birthdayShower, delay);
 }
 
@@ -44,6 +46,7 @@ function Intro() {
     <img className="intro-floating-flower intro-flower-left" src="/assets/flowers/peony.webp" alt="" />
     <img className="intro-floating-flower intro-flower-right" src="/assets/flowers/magnolia.webp" alt="" />
     <img className="intro-garland" src="/assets/flowers/birthday-garland.webp" alt="" aria-hidden="true" />
+    <img className="floral-sweep intro-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />
     <AnimatePresence mode="wait">
       {page === 'cover' ? <motion.div className="diary-cover-wrap" key="cover" initial={{ opacity: 0, y: 40, rotate: -4 }} animate={{ opacity: 1, y: 0, rotate: -1 }} exit={{ opacity: 0, rotateY: -85, x: -130, scale: .9 }} transition={{ duration: .7, ease: [0.22, 1, 0.36, 1] }}>
         <button className="diary-cover" onClick={() => setPage('envelope')} aria-label="Open Jane's birthday diary">
@@ -57,7 +60,7 @@ function Intro() {
           <img className="diary-cover-nailong" src="/assets/nailong/flower-sticker.webp" alt="" />
           <span className="diary-cover-footer">made with all my heart · Angelo</span>
         </button>
-        <p className="diary-hint">tap the heart to open your letter ♡</p>
+        <p className="diary-hint">open the book, then the letter inside ♡</p>
       </motion.div> : <motion.div className={`diary-spread ${page === 'envelope' ? 'sealed' : 'unsealed'}`} key="spread" initial={{ opacity: 0, rotateY: 75, x: 100, scale: .92 }} animate={{ opacity: 1, rotateY: 0, x: 0, scale: 1 }} exit={{ opacity: 0, y: -25 }} transition={{ duration: .85, ease: [0.22, 1, 0.36, 1] }}>
         <div className="diary-page diary-letter-page">
           <AnimatePresence mode="wait">{page === 'envelope' ? <motion.div className="diary-envelope-scene" key="envelope" initial={{ opacity: 0, scale: .8, rotate: -8 }} animate={{ opacity: 1, scale: 1, rotate: -3 }} exit={{ opacity: 0, scale: 1.15, y: -80 }} transition={{ duration: .55 }}>
@@ -86,7 +89,7 @@ function Intro() {
 function ThemePicker() {
   const theme = useGift(s => s.theme), setTheme = useGift(s => s.setTheme);
   return <div className="theme-picker" aria-label="Choose a color theme">
-    {([['pink', '♡', 'Peony'], ['yellow', '✦', 'Sunny'], ['blend', '✿', 'Both']] as const).map(([id, icon, label]) =>
+    {([['pink', '♡', 'Blush'], ['yellow', '✦', 'Sunny'], ['blend', '✿', 'Both']] as const).map(([id, icon, label]) =>
       <button key={id} title={`${label} theme`} aria-label={`${label} theme`} aria-pressed={theme === id} className={`theme-choice ${id} ${theme === id ? 'active' : ''}`} onClick={() => setTheme(id)}><span>{icon}</span><small>{label}</small></button>)}
   </div>;
 }
@@ -112,6 +115,7 @@ function Nav({ active }: { active: string }) {
 
 function Hero() {
   const pics = content.herPhotos;
+  const reopen = useGift(s => s.reopen);
   useEffect(() => {
     celebrateFirstView(850);
   }, []);
@@ -124,7 +128,7 @@ function Hero() {
         <p className="hero-age"><strong>{age}</strong><span>years of being you<br/>and that is everything.</span></p>
         <p className="lead">{content.hero.note}</p>
         <BirthdayCountdown />
-        <div className="hero-actions"><button className="primary" onClick={celebrate}>Make it rain confetti ✦</button><a className="soft-button" href="#you">See what I made ↓</a></div>
+        <div className="hero-actions"><button className="primary" onClick={celebrate}>Make it rain confetti ✦</button><a className="soft-button" href="#you">See what I made ↓</a><button className="book-again" onClick={() => { showerPlayed = false; window.scrollTo({ top: 0, behavior: 'instant' }); reopen(); }}>Open the book again ↺</button></div>
         <p className="hero-sign">always rooting for you,<br/><b>Angelo ♡</b></p>
       </motion.div>
       <motion.div className="hero-collage" aria-label="Photos of Jane" initial={{ opacity: 0, x: 45, rotate: 4 }} whileInView={{ opacity: 1, x: 0, rotate: 0 }} viewport={{ once: true }} transition={{ duration: .85, delay: .15 }}>
@@ -139,6 +143,7 @@ function Hero() {
       <img className="hero-floral hero-floral-peony" src="/assets/flowers/peony.webp" alt="" aria-hidden="true" />
       <img className="hero-floral hero-floral-magnolia" src="/assets/flowers/magnolia.webp" alt="" aria-hidden="true" />
       <img className="hero-garland" src="/assets/flowers/birthday-garland.webp" alt="" aria-hidden="true" />
+      <img className="floral-sweep hero-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />
     </div>
     <div className="hero-bottom-strip">a little corner of the internet, always yours <span>♡</span></div>
   </section>;
@@ -151,6 +156,7 @@ function Gallery({ onPhoto }: { onPhoto: (p: PhotoType) => void }) {
     <div className="gallery-strip">{content.herPhotos.map((p, i) => <Photo photo={p} key={p.src} onClick={() => onPhoto(p)} className={`gallery-photo tilt-${i % 4}`} />)}</div>
     <Sticker className="gallery-nailong" label="she's the best" src="/assets/nailong/flower-sticker.webp" />
     <img className="gallery-garland" src="/assets/flowers/birthday-garland.webp" alt="" aria-hidden="true" />
+    <img className="floral-sweep gallery-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />
   </section>;
 }
 
@@ -164,6 +170,7 @@ function Us({ onPhoto }: { onPhoto: (p: PhotoType) => void }) {
       <div className="memory-copy"><span className="scene-tag">{p.date || 'our story'} ♡</span><h3>{p.scene || 'A moment worth keeping'}</h3><p>{p.caption}</p><span className="memory-heart">♡</span></div>
     </motion.article>)}</div>
     <p className="us-outro">To be continued, together. ♡</p>
+    <img className="floral-sweep us-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />
   </section>;
 }
 
@@ -187,6 +194,7 @@ function Letters() {
         {content.letters[current].text.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}<p className="letter-sign">With love, Angelo ♡</p>
       </motion.div>
     </motion.div>}</AnimatePresence>
+    <img className="floral-sweep letters-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />
   </section>;
 }
 
@@ -201,7 +209,12 @@ function Hope() {
       <div className="hope-card garden"><h3>The still-going garden</h3><p>Every little step counts. Plant one whenever you need to remember that.</p><div className="garden-bed" aria-label={`${blooms} flowers grown`}>{Array.from({ length: Math.min(blooms, 12) }, (_, i) => <Flower key={i} kind={i % 2 ? 'magnolia' : 'peony'} />)}</div><button className="primary" onClick={() => { bloom(); setAffirmation(x => (x + 1) % content.affirmations.length); }}>I'm still going ✿</button><p className="garden-affirmation">{content.affirmations[affirmation]}</p></div>
       <div className="hope-card breathe"><div className="breathing-flower"><Flower kind="magnolia" /></div><h3>One breath at a time</h3><p>Breathe in as the flower grows. Breathe out as it settles.</p><button className="soft-button" onClick={() => setAffirmation(x => (x + 1) % content.affirmations.length)}>Another gentle reminder</button><p role="status">{content.affirmations[affirmation]}</p></div>
     </div>
+    <img className="floral-sweep hope-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />
   </section>;
+}
+
+function FloatingPetals() {
+  return <div className="floating-petals" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <span key={i} style={{ left: `${7 + i * 11}%`, animationDelay: `${-3 * i}s`, animationDuration: `${16 + 2 * i}s` }} />)}</div>;
 }
 
 export default function App() {
@@ -219,7 +232,7 @@ export default function App() {
   useEffect(() => { const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightbox(null); }; window.addEventListener('keydown', esc); return () => window.removeEventListener('keydown', esc); }, []);
 
   return <><AnimatePresence>{!opened && <Intro />}</AnimatePresence>{opened && <>
-    <Nav active={active} /><main><Hero /><Gallery onPhoto={setLightbox} /><Us onPhoto={setLightbox} /><Letters /><Hope />
+    <FloatingPetals /><Nav active={active} /><main><Hero /><Gallery onPhoto={setLightbox} /><Us onPhoto={setLightbox} /><Letters /><Hope />
       <Suspense fallback={<div className="loading-chapter">A little magic is loading... ✿</div>}><Games /><DateChapter /></Suspense>
     </main>
     <div className="buddy-anchor"><Buddy onClick={() => setSecret(n => { if (n >= 6) { unlock('secret'); celebrate(); return 0; } return n + 1; })} /></div>

@@ -21,6 +21,7 @@ export default function DateChapter() {
 
   return (
     <section className="chapter date-chapter" id="date">
+      <img className="floral-sweep date-sweep" src="/assets/flowers/birthday-sweep.webp" alt="" aria-hidden="true" />
       <div className="date-shell">
         <div className="chapter-label">One more page for us ♡</div>
         <div className="date-ticket">
