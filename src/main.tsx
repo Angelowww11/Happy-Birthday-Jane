@@ -7,4 +7,5 @@ import '@fontsource/nunito/latin-700.css';
 import '@fontsource/caveat/latin-500.css';
 import App from './App';
 import './styles.css';
+import './polish.css';
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);

@@ -22,6 +22,14 @@ function celebrate() {
   confetti({ particleCount: 150, spread: 90, origin: { y: .62 }, colors: ['#f34b96', '#ffd866', '#fff9f2', '#9e6ed9'] });
   if (navigator.vibrate) navigator.vibrate(30);
 }
+function birthdayShower() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  [0, 230, 470].forEach((delay, i) => window.setTimeout(() => confetti({ particleCount: 95, spread: 72, angle: i % 2 ? 135 : 45, startVelocity: 48, gravity: .75, origin: { x: i % 2 ? .96 : .04, y: .32 }, colors: ['#f0649b', '#ffd35e', '#fffdf7', '#ffb5d0'] }), delay));
+}
+function celebrateFirstView(delay = 0) {
+  try { if (sessionStorage.getItem('jane-birthday-shower-v2')) return; sessionStorage.setItem('jane-birthday-shower-v2', 'yes'); } catch { /* private browsing */ }
+  window.setTimeout(birthdayShower, delay);
+}
 
 function Sticker({ className = '', label = '', src = content.nailongAsset }: { className?: string; label?: string; src?: string }) {
   return <span className={`nailong-sticker ${className}`} aria-hidden="true"><img src={src} alt="" />{label && <small>{label}</small>}</span>;
@@ -29,15 +37,16 @@ function Sticker({ className = '', label = '', src = content.nailongAsset }: { c
 
 function Intro() {
   const open = useGift(s => s.open);
-  const [page, setPage] = useState<'cover' | 'letter'>('cover');
-  const enter = () => { open(); celebrate(); };
+  const [page, setPage] = useState<'cover' | 'envelope' | 'letter'>('cover');
+  const enter = () => { open(); };
   return <motion.div className="intro diary-intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.03 }}>
     <div className="diary-glow" aria-hidden="true" />
     <img className="intro-floating-flower intro-flower-left" src="/assets/flowers/peony.webp" alt="" />
     <img className="intro-floating-flower intro-flower-right" src="/assets/flowers/magnolia.webp" alt="" />
+    <img className="intro-garland" src="/assets/flowers/birthday-garland.webp" alt="" aria-hidden="true" />
     <AnimatePresence mode="wait">
       {page === 'cover' ? <motion.div className="diary-cover-wrap" key="cover" initial={{ opacity: 0, y: 40, rotate: -4 }} animate={{ opacity: 1, y: 0, rotate: -1 }} exit={{ opacity: 0, rotateY: -85, x: -130, scale: .9 }} transition={{ duration: .7, ease: [0.22, 1, 0.36, 1] }}>
-        <button className="diary-cover" onClick={() => setPage('letter')} aria-label="Open Jane's birthday diary">
+        <button className="diary-cover" onClick={() => setPage('envelope')} aria-label="Open Jane's birthday diary">
           <span className="diary-spine" aria-hidden="true" />
           <span className="diary-cover-seam" aria-hidden="true" />
           <span className="diary-cover-heading">a little birthday diary<br/>for someone I love</span>
@@ -49,19 +58,24 @@ function Intro() {
           <span className="diary-cover-footer">made with all my heart · Angelo</span>
         </button>
         <p className="diary-hint">tap the heart to open your letter ♡</p>
-      </motion.div> : <motion.div className="diary-spread" key="letter" initial={{ opacity: 0, rotateY: 75, x: 100, scale: .92 }} animate={{ opacity: 1, rotateY: 0, x: 0, scale: 1 }} exit={{ opacity: 0, y: -25 }} transition={{ duration: .75, ease: [0.22, 1, 0.36, 1] }}>
+      </motion.div> : <motion.div className={`diary-spread ${page === 'envelope' ? 'sealed' : 'unsealed'}`} key="spread" initial={{ opacity: 0, rotateY: 75, x: 100, scale: .92 }} animate={{ opacity: 1, rotateY: 0, x: 0, scale: 1 }} exit={{ opacity: 0, y: -25 }} transition={{ duration: .85, ease: [0.22, 1, 0.36, 1] }}>
         <div className="diary-page diary-letter-page">
-          <span className="diary-page-top">dear jane,</span>
-          <h1>Happy<br/><em>birthday!</em></h1>
-          <p>There are so many things I want you to know. The first one is simple: this little world is yours, and I made it with so much love.</p>
-          <p>Take your time. Open the photos, read the letters, play a little, and come back whenever you want a reminder that you matter to me.</p>
-          <span className="diary-handwritten">always yours,<br/>Angelo ♡</span>
+          <AnimatePresence mode="wait">{page === 'envelope' ? <motion.div className="diary-envelope-scene" key="envelope" initial={{ opacity: 0, scale: .8, rotate: -8 }} animate={{ opacity: 1, scale: 1, rotate: -3 }} exit={{ opacity: 0, scale: 1.15, y: -80 }} transition={{ duration: .55 }}>
+            <span className="diary-page-top">a note tucked inside</span><h1>A little<br/><em>letter for you.</em></h1>
+            <button className="diary-envelope" onClick={() => { setPage('letter'); celebrateFirstView(420); }} aria-label="Open the birthday letter"><span className="diary-envelope-flap"/><span className="diary-envelope-front"/><span className="diary-envelope-seal">♡</span><small>tap to open</small></button>
+            <p className="diary-envelope-note">I saved the first page for the birthday girl.</p>
+          </motion.div> : <motion.div className="diary-letter-content" key="letter" initial={{ opacity: 0, y: 42, rotate: 4 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ duration: .6 }}>
+            <span className="diary-page-top">dear jane,</span><h1>Happy<br/><em>birthday!</em></h1>
+            <p>There are so many things I want you to know. The first one is simple: this little world is yours, and I made it with so much love.</p>
+            <p>Take your time. Open the photos, read the letters, play a little, and come back whenever you want a reminder that you matter to me.</p>
+            <span className="diary-handwritten">always yours,<br/>Angelo ♡</span>
+          </motion.div>}</AnimatePresence>
           <img className="diary-letter-flower" src="/assets/flowers/floral-corner.webp" alt="" />
         </div>
         <div className="diary-page diary-photo-page">
           <div className="diary-page-photo"><img src={content.herPhotos[0].src} alt={content.herPhotos[0].alt} /><span>the birthday girl ♡</span></div>
-          <Sticker className="diary-letter-sticker" src="/assets/nailong/magnolia-sticker.webp" />
-          <button className="diary-enter" onClick={enter}>Turn the page <span>→</span></button>
+          <Sticker className="diary-letter-sticker" src="/assets/nailong/plush-sticker.webp" />
+          {page === 'letter' ? <button className="diary-enter" onClick={enter}>Turn the page <span>→</span></button> : <p className="diary-photo-hint">psst... open the envelope ♡</p>}
           <button className="diary-back" onClick={() => setPage('cover')}>← Back to the cover</button>
         </div>
       </motion.div>}
@@ -72,9 +86,20 @@ function Intro() {
 function ThemePicker() {
   const theme = useGift(s => s.theme), setTheme = useGift(s => s.setTheme);
   return <div className="theme-picker" aria-label="Choose a color theme">
-    {([['pink', 'Peony pink'], ['yellow', 'Nailong yellow'], ['blend', 'Pink and yellow']] as const).map(([id, label]) =>
-      <button key={id} title={label} aria-label={label} aria-pressed={theme === id} className={`theme-dot ${id} ${theme === id ? 'active' : ''}`} onClick={() => setTheme(id)} />)}
+    {([['pink', '♡', 'Peony'], ['yellow', '✦', 'Sunny'], ['blend', '✿', 'Both']] as const).map(([id, icon, label]) =>
+      <button key={id} title={`${label} theme`} aria-label={`${label} theme`} aria-pressed={theme === id} className={`theme-choice ${id} ${theme === id ? 'active' : ''}`} onClick={() => setTheme(id)}><span>{icon}</span><small>{label}</small></button>)}
   </div>;
+}
+
+function BirthdayCountdown() {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { const timer = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(timer); }, []);
+  const year = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', year: 'numeric' }).format(now));
+  const thisBirthday = new Date(`${year}-10-12T00:00:00+08:00`).getTime();
+  const nextYear = now >= thisBirthday ? year + 1 : year;
+  const left = new Date(`${nextYear}-10-12T00:00:00+08:00`).getTime() - now;
+  const values = [Math.floor(left / 86400000), Math.floor(left / 3600000) % 24, Math.floor(left / 60000) % 60, Math.floor(left / 1000) % 60];
+  return <div className="birthday-countdown" aria-label={`Countdown to Jane's next birthday on October 12, ${nextYear}`}><span className="birthday-countdown-icon">✿</span><div className="birthday-countdown-label"><small>UNTIL YOUR NEXT BIRTHDAY</small><strong>October 12, {nextYear}</strong></div><div className="birthday-countdown-values">{values.map((value, i) => <span key={i}><b>{String(value).padStart(2, '0')}</b><small>{['days','hrs','min','sec'][i]}</small></span>)}</div></div>;
 }
 
 function Nav({ active }: { active: string }) {
@@ -87,6 +112,9 @@ function Nav({ active }: { active: string }) {
 
 function Hero() {
   const pics = content.herPhotos;
+  useEffect(() => {
+    celebrateFirstView(850);
+  }, []);
   return <section className="chapter hero" id="birthday">
     <div className="hero-board">
       <motion.div className="hero-copy" initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .7 }}>
@@ -95,6 +123,7 @@ function Hero() {
         <h1>Happy<br/>birthday,<br/><em>Jane!</em></h1>
         <p className="hero-age"><strong>{age}</strong><span>years of being you<br/>and that is everything.</span></p>
         <p className="lead">{content.hero.note}</p>
+        <BirthdayCountdown />
         <div className="hero-actions"><button className="primary" onClick={celebrate}>Make it rain confetti ✦</button><a className="soft-button" href="#you">See what I made ↓</a></div>
         <p className="hero-sign">always rooting for you,<br/><b>Angelo ♡</b></p>
       </motion.div>
@@ -109,6 +138,7 @@ function Hero() {
       </motion.div>
       <img className="hero-floral hero-floral-peony" src="/assets/flowers/peony.webp" alt="" aria-hidden="true" />
       <img className="hero-floral hero-floral-magnolia" src="/assets/flowers/magnolia.webp" alt="" aria-hidden="true" />
+      <img className="hero-garland" src="/assets/flowers/birthday-garland.webp" alt="" aria-hidden="true" />
     </div>
     <div className="hero-bottom-strip">a little corner of the internet, always yours <span>♡</span></div>
   </section>;
@@ -120,6 +150,7 @@ function Gallery({ onPhoto }: { onPhoto: (p: PhotoType) => void }) {
     <motion.div className="gallery-top" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .4 }} transition={{ duration: .65 }}><div><div className="chapter-label">The Jane gallery ♡</div><span className="kicker">A very biased gallery</span><h2>Look at <em>you.</em></h2><p>Not just the photos. The person in them. The one who cares so much, keeps going, and makes my days better.</p></div><span className="gallery-count">8 little reminders<br/>of one big love ♡</span></motion.div>
     <div className="gallery-strip">{content.herPhotos.map((p, i) => <Photo photo={p} key={p.src} onClick={() => onPhoto(p)} className={`gallery-photo tilt-${i % 4}`} />)}</div>
     <Sticker className="gallery-nailong" label="she's the best" src="/assets/nailong/flower-sticker.webp" />
+    <img className="gallery-garland" src="/assets/flowers/birthday-garland.webp" alt="" aria-hidden="true" />
   </section>;
 }
 
@@ -166,7 +197,7 @@ function Hope() {
     <div className="chapter-label">A soft place to land ♡</div>
     <img className="section-flower hope-flower" src="/assets/flowers/magnolia.webp" alt="" aria-hidden="true" />
     <div className="chapter-intro"><span className="kicker">For the harder days</span><h2>Come here when<br/><em>you need a pause.</em></h2><p>Things can get better. You can do this. And you do not have to do it alone.</p></div>
-    <div className="hope-grid"><div className="hope-card open-when"><h3>Open when...</h3><div className="when-grid">{content.openWhen.map((x, i) => <button key={x.label} className={note === i ? 'active' : ''} onClick={() => setNote(i)}>✉ <span>{x.label}</span></button>)}</div><div className="when-message" role="status">{note === null ? 'Choose the note you need today.' : content.openWhen[note].message}</div></div>
+    <div className="hope-grid"><div className="hope-card open-when"><h3>Open when...</h3><div className="when-grid">{content.openWhen.map((x, i) => <button key={x.label} className={note === i ? 'active' : ''} onClick={() => setNote(i)}>✉ <span>{x.label}</span></button>)}</div><div className="when-message" role="status" key={note ?? 'empty'}>{note === null ? 'Choose the note you need today.' : content.openWhen[note].message}</div></div>
       <div className="hope-card garden"><h3>The still-going garden</h3><p>Every little step counts. Plant one whenever you need to remember that.</p><div className="garden-bed" aria-label={`${blooms} flowers grown`}>{Array.from({ length: Math.min(blooms, 12) }, (_, i) => <Flower key={i} kind={i % 2 ? 'magnolia' : 'peony'} />)}</div><button className="primary" onClick={() => { bloom(); setAffirmation(x => (x + 1) % content.affirmations.length); }}>I'm still going ✿</button><p className="garden-affirmation">{content.affirmations[affirmation]}</p></div>
       <div className="hope-card breathe"><div className="breathing-flower"><Flower kind="magnolia" /></div><h3>One breath at a time</h3><p>Breathe in as the flower grows. Breathe out as it settles.</p><button className="soft-button" onClick={() => setAffirmation(x => (x + 1) % content.affirmations.length)}>Another gentle reminder</button><p role="status">{content.affirmations[affirmation]}</p></div>
     </div>
